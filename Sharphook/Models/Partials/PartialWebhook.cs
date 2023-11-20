@@ -255,6 +255,7 @@ namespace Sharphook.Models.Partials
 
 				byte[] imageByteArray = await File.ReadAllBytesAsync(avatarFilePath);
 				string base64ImageData = Convert.ToBase64String(imageByteArray);
+
 				string contentType = "";
 
 				switch (avatarFileContentType)
