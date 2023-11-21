@@ -245,41 +245,11 @@ namespace Sharphook.Models.Partials
 			await Client.Delete(requestUrl);
 		}
 
-		public async Task<Webhook> Edit(string? newName = null, string? avatarFilePath = null, FileContentType? avatarFileContentType = null)
+		public async Task<Webhook> Edit(string newName)
 		{
-			string? imageData = null;
-
-			if (avatarFilePath != null)
-			{
-				ArgumentNullException.ThrowIfNull(avatarFileContentType, "avatarFileContentType");
-
-				byte[] imageByteArray = await File.ReadAllBytesAsync(avatarFilePath);
-				string base64ImageData = Convert.ToBase64String(imageByteArray);
-
-				string contentType = "";
-
-				switch (avatarFileContentType)
-				{
-					case FileContentType.PNG:
-						contentType = "image/png";
-						break;
-					case FileContentType.JPEG:
-						contentType = "image/jpeg";
-						break;
-					case FileContentType.GIF:
-						contentType = "image/gif";
-						break;
-				}
-
-				imageData = $"data:{contentType};base64,{base64ImageData}";
-
-				Console.WriteLine(imageData);
-			}
-
 			object requestBody = new
 			{
-				name = newName,
-				avatar = imageData
+				name = newName
 			};
 
 			ApiResponce<WebhookObject> apiResponce = await Client.Patch<WebhookObject>(BaseUrl, requestBody);
@@ -287,7 +257,45 @@ namespace Sharphook.Models.Partials
 			return new Webhook(Client, apiResponce.ResponceObject!);
 		}
 
-		public async Task Delete()
+        public async Task<Webhook> Edit(string avatarFilePath, FileContentType avatarFileContentType)
+        {
+            string? imageData = null;
+
+            ArgumentNullException.ThrowIfNull(avatarFileContentType, "avatarFileContentType");
+
+            byte[] imageByteArray = await File.ReadAllBytesAsync(avatarFilePath);
+            string base64ImageData = Convert.ToBase64String(imageByteArray);
+
+            string contentType = "";
+
+            switch (avatarFileContentType)
+            {
+                case FileContentType.PNG:
+                    contentType = "image/png";
+                    break;
+                case FileContentType.JPEG:
+                    contentType = "image/jpeg";
+                    break;
+                case FileContentType.GIF:
+                    contentType = "image/gif";
+                    break;
+            }
+
+            imageData = $"data:{contentType};base64,{base64ImageData}";
+
+            Console.WriteLine(contentType);
+
+            object requestBody = new
+            {
+                avatar = imageData
+            };
+
+            ApiResponce<WebhookObject> apiResponce = await Client.Patch<WebhookObject>(BaseUrl, requestBody);
+
+            return new Webhook(Client, apiResponce.ResponceObject!);
+        }
+
+        public async Task Delete()
 		{
 			await Client.Delete(BaseUrl);
 		}
