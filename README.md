@@ -71,7 +71,7 @@ catch (SharphookHttpException exception)
 
 ## License
 
-Sharphook is  under the [MIT license](LICENSE.md).
+Sharphook is  under the [MIT license](LICENSE.txt).
 
 ## Disclaimers
 
