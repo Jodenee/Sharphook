@@ -46,7 +46,7 @@ PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 await webhook.Edit("New name");
 
 // Edit webhook avatar
-await webhook.Edit("C:\\Users\\Owner\\Desktop\\newAvatar.png", FileContentType.PNG);
+await webhook.Edit(@"newAvatar.png", FileContentType.PNG);
 ```
 
 ### Error handling 
