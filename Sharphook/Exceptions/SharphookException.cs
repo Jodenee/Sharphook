@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using static System.Formats.Asn1.AsnWriter;
+﻿using System.Net.Http.Headers;
 
 namespace Sharphook.Exceptions
 {

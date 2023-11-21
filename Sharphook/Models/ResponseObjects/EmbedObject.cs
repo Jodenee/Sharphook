@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-
-
-namespace Sharphook.Models.ResponseObjects
+﻿namespace Sharphook.Models.ResponseObjects
 {
     public class EmbedObject
     {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Sharphook.DataTypes;
+﻿using Sharphook.DataTypes;
 using Sharphook.Models.ResponseObjects;
 
 namespace Sharphook.Models

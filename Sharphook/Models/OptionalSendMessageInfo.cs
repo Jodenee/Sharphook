@@ -1,5 +1,4 @@
-﻿
-namespace Sharphook.Models
+﻿namespace Sharphook.Models
 {
     public class OptionalSendMessageInfo
     {

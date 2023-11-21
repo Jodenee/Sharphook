@@ -4,8 +4,6 @@ using Sharphook.Models.ResponseObjects;
 using Sharphook.Exceptions;
 using System.Net;
 using Sharphook.Models.Partials;
-using Sharphook.Enums;
-using Microsoft.VisualBasic;
 
 namespace Sharphook.Models
 {

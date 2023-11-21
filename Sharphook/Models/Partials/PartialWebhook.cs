@@ -1,6 +1,5 @@
 using Sharphook.Enums;
 using Sharphook.Models.ResponseObjects;
-using System.Net.WebSockets;
 
 namespace Sharphook.Models.Partials
 {

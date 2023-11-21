@@ -1,7 +1,4 @@
-﻿using Sharphook.Models.Partials;
-using Sharphook.Models.ResponseObjects;
-using System;
-using System.Collections.Generic;
+﻿using Sharphook.Models.ResponseObjects;
 
 namespace Sharphook.Models
 {

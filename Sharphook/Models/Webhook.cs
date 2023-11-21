@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Sharphook.Models.Partials;
+﻿using Sharphook.Models.Partials;
 using Sharphook.Models.ResponseObjects;
 
 namespace Sharphook.Models
