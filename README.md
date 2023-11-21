@@ -37,6 +37,18 @@ Message message = responce.ResponceObject!;
 Console.WriteLine(message.Id);
 ```
 
+### Editing a webhook
+```c# 
+WebhookClient webhookClient = new WebhookClient();
+PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
+
+// Edit webhook name
+await webhook.Edit("New name");
+
+// Edit webhook avatar
+await webhook.Edit("C:\\Users\\Owner\\Desktop\\newAvatar.png", FileContentType.PNG);
+```
+
 ### Error handling 
 
 ```c#
