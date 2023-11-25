@@ -35,7 +35,6 @@ namespace Sharphook.Models
 		internal async Task<ApiResponce<ReturnObject>> Get<ReturnObject>(string url)
 		{
 			Uri requestUri = new Uri(url);
-
 			HttpResponseMessage responceMessage = await HttpClient.GetAsync(requestUri);
 
 			if (!responceMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responceMessage); }
@@ -49,10 +48,12 @@ namespace Sharphook.Models
 		internal async Task<ApiResponce<ReturnObject>> Post<ReturnObject>(string requestUrl, object requestBody)
 		{
 			Uri requestUri = new Uri(requestUrl);
-			StringContent httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
-			HttpResponseMessage responceMessage = (await HttpClient.PostAsync(requestUri, httpContent));
+			string serializedJsonObject = JsonConvert.SerializeObject(requestBody);
 
-			if (!responceMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responceMessage); }
+            StringContent httpContent = new StringContent(serializedJsonObject, Encoding.UTF8, "application/json");
+			HttpResponseMessage responceMessage = await HttpClient.PostAsync(requestUri, httpContent);
+
+            if (!responceMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responceMessage); }
 
 			string stringJsonData = await responceMessage.Content.ReadAsStringAsync();
 			ReturnObject jsonData = JsonConvert.DeserializeObject<ReturnObject>(stringJsonData)!;
@@ -63,7 +64,9 @@ namespace Sharphook.Models
 		internal async Task<ApiResponce<ReturnObject>> Patch<ReturnObject>(string requestUrl, object requestBody)
 		{
 			Uri requestUri = new Uri(requestUrl);
-			StringContent httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+            string serializedJsonObject = JsonConvert.SerializeObject(requestBody);
+
+            StringContent httpContent = new StringContent(serializedJsonObject, Encoding.UTF8, "application/json");
 			HttpResponseMessage responceMessage = await HttpClient.PatchAsync(requestUri, httpContent);
 
 			if (!responceMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responceMessage); }
