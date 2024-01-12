@@ -1,7 +1,4 @@
 ﻿using Sharphook.DataTypes;
-using static System.Net.Mime.MediaTypeNames;
-using System.Drawing;
-using System;
 
 namespace Sharphook.Models.ResponseObjects
 {

@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-
-namespace Sharphook.Exceptions
+﻿namespace Sharphook.Exceptions
 {
 	public class SharphookException : Exception
 	{

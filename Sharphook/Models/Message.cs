@@ -1,6 +1,4 @@
-﻿using Sharphook.DataTypes;
-using Sharphook.Models.ResponseObjects;
-using System.Dynamic;
+﻿using Sharphook.Models.ResponseObjects;
 
 namespace Sharphook.Models
 {
