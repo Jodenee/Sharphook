@@ -12,7 +12,7 @@ Sharphook is an asynchronous object oriented API wrapper for Discord's webhook A
 WebhookClient webhookClient = new WebhookClient();
 PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 
-await webhook.SendMessage("Hello, world!");
+await webhook.SendMessageAsync("Hello, world!");
 ```
 
 ### Sending a message to a thread
@@ -22,7 +22,7 @@ WebhookClient webhookClient = new WebhookClient();
 PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 ulong threadId = 123;
 
-await webhook.SendMessageInThread(threadId, "Hello, world!");
+await webhook.SendMessageInThreadAsync(threadId, "Hello, world!");
 ```
 
 ### Getting a Message responce
@@ -31,8 +31,7 @@ await webhook.SendMessageInThread(threadId, "Hello, world!");
 WebhookClient webhookClient = new WebhookClient();
 PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 
-AbstractedResponce<Message> responce =  await webhook.SendMessage("Hello, world!", null, true);
-Message message = responce.ResponceObject!;
+Message message = await webhook.SendMessageAsync("Hello, world!", null, true);
 
 Console.WriteLine(message.Id);
 ```
@@ -43,10 +42,10 @@ WebhookClient webhookClient = new WebhookClient();
 PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 
 // Edit webhook name
-await webhook.Edit("New name");
+await webhook.EditWebhookNameAsync("New name");
 
 // Edit webhook avatar
-await webhook.Edit(@"newAvatar.png", FileContentType.PNG);
+await webhook.EditWebhookAvatarAsync(@"newAvatar.png", FileContentType.PNG);
 ```
 
 ### Error handling 
@@ -65,7 +64,7 @@ catch (SharphookHttpException exception)
 }
 ```
 
-## Libraries used
+## Dependencies
 
 *  [Json.NET](http://james.newtonking.com/json)
 

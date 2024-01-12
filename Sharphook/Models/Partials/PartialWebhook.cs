@@ -1,3 +1,6 @@
+using System.Dynamic;
+
+using Sharphook.DataTypes;
 using Sharphook.Enums;
 using Sharphook.Models.ResponseObjects;
 
@@ -5,95 +8,22 @@ namespace Sharphook.Models.Partials
 {
 	public class PartialWebhook
 	{
-		private WebhookClient Client { get; }
+		WebhookClient Client;
 		public ulong Id { get; private set; }
 		public string Token { get; private set; }
-		public string BaseUrl { get; private set; }
+		public string BaseUrl 
+		{
+			get => $"https://discord.com/api/v{Client.ApiVersion}/webhooks/{Id}/{Token}";
+		}
 
 		public PartialWebhook(WebhookClient client, ulong webhookId, string webhookToken)
 		{
 			Client = client;
 			Id = webhookId;
 			Token = webhookToken;
-			BaseUrl = $"https://discord.com/api/webhooks/{Id}/{Token}";
 		}
 
-		private static EmbedObject EmbedToEmbedObject(Embed embed)
-		{
-			EmbedObject embedObject = new EmbedObject();
-
-			embedObject.title = embed.Title;
-			embedObject.description = embed.Description;
-			embedObject.url = embed.Url;
-			embedObject.fields = new List<EmbedObjectField>();
-
-			if (embed.Color != null)
-			{
-				embedObject.color = embed.Color.Value;
-			}
-
-			if (embed.Timestamp != null)
-			{
-				embedObject.timestamp = embed.Timestamp?.ToString("o");
-			}
-
-			if (embed.Footer != null)
-			{
-				EmbedObjectFooter embedObjectFooter = new EmbedObjectFooter();
-
-				embedObjectFooter.text = embed.Footer.Text;
-				embedObjectFooter.icon_url = embed.Footer.IconUrl;
-
-				embedObject.footer = embedObjectFooter;
-			}
-
-			if (embed.Image != null)
-			{
-				EmbedObjectImage embedObjectImage = new EmbedObjectImage();
-
-				embedObjectImage.url = embed.Image.Url;
-
-				embedObject.image = embedObjectImage;
-			}
-
-			if (embed.Thumbnail != null)
-			{
-				EmbedObjectThumbnail embedObjectThumbnail = new EmbedObjectThumbnail();
-
-				embedObjectThumbnail.url = embed.Thumbnail.Url;
-
-				embedObject.thumbnail = embedObjectThumbnail;
-			}
-
-			if (embed.Author != null)
-			{
-				EmbedObjectAuthor embedObjectAuthor = new EmbedObjectAuthor();
-
-				embedObjectAuthor.name = embed.Author.Name;
-				embedObjectAuthor.url = embed.Author.Url;
-				embedObjectAuthor.icon_url = embed.Author.IconUrl;
-
-				embedObject.author = embedObjectAuthor;
-			}
-
-			if (embed.Fields != null)
-			{
-				foreach (EmbedField field in embed.Fields)
-				{
-					EmbedObjectField embedObjectField = new EmbedObjectField();
-
-					embedObjectField.name = field.Name;
-					embedObjectField.value = field.Value;
-					embedObjectField.inline = field.InLine;
-
-					embedObject.fields.Add(embedObjectField);
-				}
-			}
-
-			return embedObject;
-		}
-
-		public async Task<AbstractedResponce<Message>> SendMessage(string? content = null, List<Embed>? embeds = null, bool waitForMessage = false, OptionalSendMessageInfo? optionalSendMessageInfo = null)
+		public async Task<Message?> SendMessageAsync(string? content = null, List<Embed>? embeds = null, bool waitForMessage = false, OptionalSendMessageInfo? optionalSendMessageInfo = null)
 		{
 			string requestUrl = $"{BaseUrl}?wait={waitForMessage}";
 
@@ -102,11 +32,9 @@ namespace Sharphook.Models.Partials
 
 			if (embeds != null)
 			{
-				for (byte i = 0; i < embeds.Count; i++)
+				foreach (Embed embed in embeds)
 				{
-					Embed embed = embeds[i];
-
-					embedObjects.Add(EmbedToEmbedObject(embed));
+					embedObjects.Add(embed._ToEmbedObject());
 				}
 			}
 
@@ -122,20 +50,27 @@ namespace Sharphook.Models.Partials
 			};
 
 
-			ApiResponce<MessageObject> apiResponce = await Client.Post<MessageObject>(requestUrl, requestBody);
-			RatelimitInfo ratelimitInfo = new RatelimitInfo(apiResponce.HttpResponse.Headers);
+			MessageObject messageObject;
+
+
+			if (optionalInfo.Files != null)
+			{
+                messageObject = await Client.PostMultipart<MessageObject>(requestUrl, requestBody, optionalInfo.Files);
+            }
+            else
+			{
+                messageObject = await Client.Post<MessageObject>(requestUrl, requestBody);
+            }
 
 			if (waitForMessage)
 			{
-				Message message = new Message(Client, apiResponce.ResponceObject!);
-
-				return new AbstractedResponce<Message>(message, ratelimitInfo);
+				return new Message(Client, messageObject);
 			}
 
-			return new AbstractedResponce<Message>(null, ratelimitInfo);
+			return null;
 		}
 
-		public async Task<AbstractedResponce<ThreadMessage>> SendMessageInThread(ulong threadId, string? content = null, List<Embed>? embeds = null, bool waitForMessage = false, OptionalSendMessageInfo? optionalSendMessageInfo = null)
+		public async Task<ThreadMessage?> SendMessageInThreadAsync(ulong threadId, string? content = null, List<Embed>? embeds = null, bool waitForMessage = false, OptionalSendMessageInfo? optionalSendMessageInfo = null)
 		{
 			string requestUrl = $"{BaseUrl}?wait={waitForMessage}&thread_id={threadId}";
 
@@ -146,7 +81,7 @@ namespace Sharphook.Models.Partials
 			{
 				foreach (Embed embed in embeds)
 				{
-					embedObjects.Add(EmbedToEmbedObject(embed));
+					embedObjects.Add(embed._ToEmbedObject());
 				}
 			}
 
@@ -161,107 +96,164 @@ namespace Sharphook.Models.Partials
 				thread_name = optionalInfo.ThreadName
 			};
 
+            ThreadMessageObject threadMessageObject;
 
-			ApiResponce<ThreadMessageObject> apiResponce = await Client.Post<ThreadMessageObject>(requestUrl, requestBody);
-			RatelimitInfo ratelimitInfo = new RatelimitInfo(apiResponce.HttpResponse.Headers);
-
+            if (optionalInfo.Files != null)
+            {
+                threadMessageObject = await Client.PostMultipart<ThreadMessageObject>(requestUrl, requestBody, optionalInfo.Files);
+            }
+            else
+            {
+                threadMessageObject = await Client.Post<ThreadMessageObject>(requestUrl, requestBody);
+            }
 
 			if (waitForMessage)
 			{
-				ThreadMessage threadMessage = new ThreadMessage(Client, apiResponce.ResponceObject!);
+                return new ThreadMessage(Client, threadMessageObject);
+            }
 
-				return new AbstractedResponce<ThreadMessage>(threadMessage, ratelimitInfo);
-			}
+            return null;
+        }
 
-			return new AbstractedResponce<ThreadMessage>(null, ratelimitInfo);
-		}
-
-		public async Task<AbstractedResponce<EditedMessage>> EditMessage(ulong messageId, string? content = null, List<Embed>? embeds = null)
+		public async Task<EditedMessage> EditMessageAsync(ulong messageId, string? content = null, List<Embed>? embeds = null, OptionalEditMessageInfo? optionalEditInfo = null)
 		{
 			string requestUrl = $"{BaseUrl}/messages/{messageId}";
+			OptionalEditMessageInfo optionalInfo = optionalEditInfo ?? new OptionalEditMessageInfo();
 
-			List<EmbedObject> embedObjects = new List<EmbedObject>();
+            List<EmbedObject> embedObjects = new List<EmbedObject>();
+            List<object> attachments = new List<object>();
+            dynamic requestBody = new ExpandoObject();
 
 			if (embeds != null)
 			{
 				foreach (Embed embed in embeds)
 				{
-					embedObjects.Add(EmbedToEmbedObject(embed));
+					embedObjects.Add(embed._ToEmbedObject());
 				}
 			}
 
-			object requestBody = new
+            if (optionalInfo.Files != null)
 			{
-				content,
-				embeds = embedObjects
-			};
+				for (int i = 0; i < optionalInfo.Files.Count; i++)
+				{
+					SharphookFile file = optionalInfo.Files[i];
+					attachments.Add(file._ToObject(i));
+				}
+			}
 
-			ApiResponce<EditedMessageObject> apiResponce = await Client.Patch<EditedMessageObject>(requestUrl, requestBody);
-			RatelimitInfo ratelimitInfo = new RatelimitInfo(apiResponce.HttpResponse.Headers);
-			EditedMessage message = new EditedMessage(Client, apiResponce.ResponceObject!);
 
-			return new AbstractedResponce<EditedMessage>(message, ratelimitInfo);
-		}
+            if (content != null) { requestBody.content = content; }
+			if (embeds != null) { requestBody.embeds = embedObjects; }
+			if (attachments != null) { requestBody.attachments = attachments; }
 
-		public async Task<AbstractedResponce<EditedThreadMessage>> EditMessageInThread(ulong threadId, ulong messageId, string? content = null, List<Embed>? embeds = null)
+
+            EditedMessageObject editedMessageObject;
+
+			if (optionalInfo.Files != null)
+			{
+                editedMessageObject = await Client.PatchMultipart<EditedMessageObject>(requestUrl, requestBody, optionalInfo.Files);
+            }
+			else
+			{
+                editedMessageObject = await Client.Patch<EditedMessageObject>(requestUrl, requestBody);
+            }
+
+			return new EditedMessage(Client, editedMessageObject);
+        }
+
+		public async Task<EditedThreadMessage> EditMessageInThreadAsync(ulong threadId, ulong messageId, string? content = null, List<Embed>? embeds = null, OptionalEditMessageInfo? optionalEditInfo = null)
 		{
 			string requestUrl = $"{BaseUrl}/messages/{messageId}?thread_id={threadId}";
+            OptionalEditMessageInfo optionalInfo = optionalEditInfo ?? new OptionalEditMessageInfo();
 
-			List<EmbedObject> embedObjects = new List<EmbedObject>();
+            List<EmbedObject> embedObjects = new List<EmbedObject>();
+            List<object> attachments = new List<object>();
+            dynamic requestBody = new ExpandoObject();
 
-			if (embeds != null)
+            if (embeds != null)
 			{
 				foreach (Embed embed in embeds)
 				{
-					embedObjects.Add(EmbedToEmbedObject(embed));
+					embedObjects.Add(embed._ToEmbedObject());
 				}
 			}
 
-			object requestBody = new
-			{
-				content,
-				embeds = embedObjects
-			};
+            if (optionalInfo.Files != null)
+            {
+                for (int i = 0; i < optionalInfo.Files.Count; i++)
+                {
+                    SharphookFile file = optionalInfo.Files[i];
+                    attachments.Add(file._ToObject(i));
+                }
+            }
 
-			ApiResponce<EditedThreadMessageObject> apiResponce = await Client.Patch<EditedThreadMessageObject>(requestUrl, requestBody);
-			RatelimitInfo ratelimitInfo = new RatelimitInfo(apiResponce.HttpResponse.Headers);
-			EditedThreadMessage message = new EditedThreadMessage(Client, apiResponce.ResponceObject!);
 
-			return new AbstractedResponce<EditedThreadMessage>(message, ratelimitInfo);
-		}
+            if (content != null) { requestBody.content = content; }
+            if (embeds != null) { requestBody.embeds = embedObjects; }
+            if (attachments != null) { requestBody.attachments = attachments; }
 
-		public async Task DeleteMessage(ulong messageId)
+
+            EditedThreadMessageObject editedThreadMessageObject;
+
+            if (optionalInfo.Files != null)
+            {
+                editedThreadMessageObject = await Client.PatchMultipart<EditedThreadMessageObject>(requestUrl, requestBody, optionalInfo.Files);
+            }
+            else
+            {
+                editedThreadMessageObject = await Client.Patch<EditedThreadMessageObject>(requestUrl, requestBody);
+            }
+
+			return new EditedThreadMessage(Client, editedThreadMessageObject);
+        }
+
+		public async Task DeleteMessageAsync(ulong messageId)
 		{
 			string requestUrl = $"{BaseUrl}/messages/{messageId}";
 
 			await Client.Delete(requestUrl);
 		}
 
-		public async Task DeleteMessageInThread(ulong threadid, ulong messageId)
+		public async Task DeleteMessageInThreadAsync(ulong threadid, ulong messageId)
 		{
 			string requestUrl = $"{BaseUrl}/messages/{messageId}?thread_id={threadid}";
 
 			await Client.Delete(requestUrl);
 		}
 
-		public async Task<Webhook> Edit(string newName)
+        public async Task<Message> GetMessageAsync(ulong messageId)
+        {
+            string requestUrl = $"{BaseUrl}/messages/{messageId}";
+
+            MessageObject messageObject = await Client.Get<MessageObject>(requestUrl);
+
+            return new Message(Client, messageObject);
+        }
+
+        public async Task<ThreadMessage> GetMessageInThreadAsync(ulong messageId, ulong threadId)
+        {
+            string requestUrl = $"{BaseUrl}/messages/{messageId}?thread_id={threadId}";
+
+            ThreadMessageObject threadMessageObject = await Client.Get<ThreadMessageObject>(requestUrl);
+
+            return new ThreadMessage(Client, threadMessageObject);
+        }
+
+        public async Task<Webhook> EditWebhookNameAsync(string newName)
 		{
 			object requestBody = new
 			{
 				name = newName
 			};
 
-			ApiResponce<WebhookObject> apiResponce = await Client.Patch<WebhookObject>(BaseUrl, requestBody);
-			
-			return new Webhook(Client, apiResponce.ResponceObject!);
-		}
+			WebhookObject webhookObject = await Client.Patch<WebhookObject>(BaseUrl, requestBody);
+            Webhook webhook = new Webhook(Client, webhookObject);
 
-        public async Task<Webhook> Edit(string avatarFilePath, FileContentType avatarFileContentType)
+            return webhook;
+        }
+		
+        public async Task<Webhook> EditWebhookAvatarAsync(string avatarFilePath, FileContentType avatarFileContentType)
         {
-            string? imageData = null;
-
-            ArgumentNullException.ThrowIfNull(avatarFileContentType, "avatarFileContentType");
-
             byte[] imageByteArray = await File.ReadAllBytesAsync(avatarFilePath);
             string base64ImageData = Convert.ToBase64String(imageByteArray);
 
@@ -280,23 +272,17 @@ namespace Sharphook.Models.Partials
                     break;
             }
 
-            imageData = $"data:{contentType};base64,{base64ImageData}";
-
-            Console.WriteLine(contentType);
+            string imageData = $"data:{contentType};base64,{base64ImageData}";
 
             object requestBody = new
             {
                 avatar = imageData
             };
 
-            ApiResponce<WebhookObject> apiResponce = await Client.Patch<WebhookObject>(BaseUrl, requestBody);
+            WebhookObject webhookObject = await Client.Patch<WebhookObject>(BaseUrl, requestBody);
+			Webhook webhook = new Webhook(Client, webhookObject);
 
-            return new Webhook(Client, apiResponce.ResponceObject!);
+            return webhook;
         }
-
-        public async Task Delete()
-		{
-			await Client.Delete(BaseUrl);
-		}
 	}
 }

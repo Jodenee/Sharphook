@@ -5,7 +5,7 @@ namespace Sharphook.Models
 {
 	public class Webhook : PartialWebhook
 	{
-		private WebhookClient Client { get; }
+		private WebhookClient Client { get; set; }
 		public Int16 Type { get; private set; }
 		public string Name { get; private set; }
 		public string GuildId { get; private set; }

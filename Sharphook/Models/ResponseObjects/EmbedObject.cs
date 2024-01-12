@@ -1,4 +1,9 @@
-﻿namespace Sharphook.Models.ResponseObjects
+﻿using Sharphook.DataTypes;
+using static System.Net.Mime.MediaTypeNames;
+using System.Drawing;
+using System;
+
+namespace Sharphook.Models.ResponseObjects
 {
     public class EmbedObject
     {
@@ -12,6 +17,52 @@
         public EmbedObjectThumbnail? thumbnail { get; set; }
         public EmbedObjectAuthor? author { get; set; }
         public List<EmbedObjectField>? fields { get; set; }
+
+        internal Embed _ToEmbed()
+        {
+            Embed embed = new Embed(title, description, url);
+
+            if (color != null)
+            {
+                embed.Color = new SharphookColor((uint)color);
+            }
+
+            if (timestamp != null)
+            {
+                embed.Timestamp = DateTime.Parse(timestamp);
+            }
+
+            if (footer != null)
+            {
+                embed.Footer = new EmbedFooter(footer.text, footer.icon_url);
+            }
+
+            if (image != null)
+            {
+                embed.Image = new EmbedImage(image.url);
+            }
+
+            if (thumbnail != null)
+            {
+                embed.Thumbnail = new EmbedThumbnail(thumbnail.url);
+            }
+
+            if (author != null)
+            {
+                embed.Author = new EmbedAuthor(author.name, author.url, author.icon_url);
+            }
+
+            if (fields != null)
+            {
+                foreach (EmbedObjectField fieldObject in fields)
+                {
+                    embed.Fields.Add(new EmbedField(fieldObject.name, fieldObject.value, fieldObject.inline));
+                    Console.WriteLine(fieldObject.inline);
+                }
+            }
+
+            return embed;
+        }
     }
 
     public class EmbedObjectFooter

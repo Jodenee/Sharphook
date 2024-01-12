@@ -19,7 +19,7 @@
             Random random = new Random();
             int maxValue = 0xFFFFFF;
 
-            Value = Convert.ToUInt32(random.Next(Convert.ToInt32(maxValue + 1)));
+            Value = Convert.ToUInt32(random.Next(maxValue + 1));
         }
 
         public void SetValue(uint value)

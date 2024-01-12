@@ -25,7 +25,7 @@ namespace Sharphook.Models
             Fields = new List<EmbedField>();
         }
 
-        public Embed(EmbedObject embedObject) 
+        internal Embed(EmbedObject embedObject) 
         {
             Title = embedObject.title;
             Description = embedObject.description;
@@ -92,6 +92,81 @@ namespace Sharphook.Models
             }
 
             return totalCharacters;
+        }
+
+        internal EmbedObject _ToEmbedObject()
+        {
+            EmbedObject embedObject = new EmbedObject();
+
+            embedObject.title = Title;
+            embedObject.description = Description;
+            embedObject.url = Url;
+            embedObject.fields = new List<EmbedObjectField>();
+
+            if (Color != null)
+            {
+                embedObject.color = Color.Value;
+            }
+
+            if (Timestamp != null)
+            {
+                embedObject.timestamp = Timestamp?.ToString("o");
+            }
+
+            if (Footer != null)
+            {
+                EmbedObjectFooter embedObjectFooter = new EmbedObjectFooter();
+
+                embedObjectFooter.text = Footer.Text;
+                embedObjectFooter.icon_url = Footer.IconUrl;
+
+                embedObject.footer = embedObjectFooter;
+            }
+
+            if (Image != null)
+            {
+                EmbedObjectImage embedObjectImage = new EmbedObjectImage();
+
+                embedObjectImage.url = Image.Url;
+
+                embedObject.image = embedObjectImage;
+            }
+
+            if (Thumbnail != null)
+            {
+                EmbedObjectThumbnail embedObjectThumbnail = new EmbedObjectThumbnail();
+
+                embedObjectThumbnail.url = Thumbnail.Url;
+
+                embedObject.thumbnail = embedObjectThumbnail;
+            }
+
+            if (Author != null)
+            {
+                EmbedObjectAuthor embedObjectAuthor = new EmbedObjectAuthor();
+
+                embedObjectAuthor.name = Author.Name;
+                embedObjectAuthor.url = Author.Url;
+                embedObjectAuthor.icon_url = Author.IconUrl;
+
+                embedObject.author = embedObjectAuthor;
+            }
+
+            if (Fields != null)
+            {
+                foreach (EmbedField field in Fields)
+                {
+                    EmbedObjectField embedObjectField = new EmbedObjectField();
+
+                    embedObjectField.name = field.Name;
+                    embedObjectField.value = field.Value;
+                    embedObjectField.inline = field.InLine;
+
+                    embedObject.fields.Add(embedObjectField);
+                }
+            }
+
+            return embedObject;
         }
     }
 
