@@ -66,8 +66,7 @@ namespace Sharphook.Models
             {
                 foreach (EmbedObjectField fieldObject in embedObject.fields)
                 {
-                    Fields.Add(new EmbedField(fieldObject.name, fieldObject.value, fieldObject.inline)); //problem was probably solved check for me tytyt
-                    Console.WriteLine(fieldObject.inline);
+                    Fields.Add(new EmbedField(fieldObject.name, fieldObject.value, fieldObject.inline));
                 }
             }
         }

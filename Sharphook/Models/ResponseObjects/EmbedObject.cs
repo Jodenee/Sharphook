@@ -54,7 +54,6 @@ namespace Sharphook.Models.ResponseObjects
                 foreach (EmbedObjectField fieldObject in fields)
                 {
                     embed.Fields.Add(new EmbedField(fieldObject.name, fieldObject.value, fieldObject.inline));
-                    Console.WriteLine(fieldObject.inline);
                 }
             }
 

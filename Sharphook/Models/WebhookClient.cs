@@ -46,7 +46,6 @@ namespace Sharphook.Models
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             bool resetAfterHeadersExist = headers.TryGetValues("X-Ratelimit-Reset-After", out resetAfter);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            Console.WriteLine(headers.GetValues("X-Ratelimit-Bucket").First());
 
             if (useClock || !resetAfterHeadersExist)
             {
@@ -81,8 +80,6 @@ namespace Sharphook.Models
             {
                 int waitTime = Convert.ToInt32(parseRatelimitHeader(responseMessage) * 1000);
 
-                Console.WriteLine($"Bucket depleted, waiting {waitTime / 1_000}s and retrying");
-
                 await Task.Delay(waitTime);
 
                 requestLock.Release();
@@ -92,8 +89,6 @@ namespace Sharphook.Models
             {
                 int retryAfterInSeconds = Convert.ToInt32(responseMessage.Headers.GetValues("Retry-After").First());
                 int retryAfterInMilliseconds = retryAfterInSeconds * 1000;
-
-                Console.WriteLine($"Ratelimited! waiting {retryAfterInSeconds}s and retrying");
 
                 await Task.Delay(retryAfterInMilliseconds + 1_000);
 
@@ -129,8 +124,6 @@ namespace Sharphook.Models
 
             string jsonString = await responseMessage.Content.ReadAsStringAsync();
             ReturnObject jsonData = JsonConvert.DeserializeObject<ReturnObject>(jsonString)!;
-
-            Console.WriteLine(jsonString);
 
             responseMessage.Dispose();
             return jsonData;
