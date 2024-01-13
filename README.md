@@ -4,6 +4,16 @@
 
 Sharphook is an asynchronous object oriented API wrapper for Discord's webhook API.
 
+## Compatibility
+
+
+| .NET Version   | Compatible? |
+|:--------------:|:-----------:|
+| .NET 8 (Target)| **YES**	   |
+| .NET 7         | **UNSURE**  |
+| .NET 6         | **UNSURE**  |
+
+
 ## Examples
 
 ### Sending a message 
@@ -25,7 +35,7 @@ ulong threadId = 123;
 await webhook.SendMessageInThreadAsync(threadId, "Hello, world!");
 ```
 
-### Getting a Message responce
+### Obtaining a message object
 
 ```c#
 WebhookClient webhookClient = new WebhookClient();
@@ -56,11 +66,11 @@ PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 
 try
 {
-	await webhook.SendMessage("");
+    await webhook.SendMessage("");
 }
 catch (SharphookHttpException exception)
 {
-	Console.WriteLine($"{(int)exception.Response.StatusCode} {exception.Response.ReasonPhrase}"); // 400 Bad Request
+    Console.WriteLine($"{(int)exception.Response.StatusCode} {exception.Response.ReasonPhrase}"); // 400 Bad Request
 }
 ```
 
@@ -75,4 +85,4 @@ Sharphook is  under the [MIT license](LICENSE.txt).
 ## Disclaimers
 
 * Sharphook is just maintained for fun.
-* Sharphook is not mature enough to be used in production yet.
+* Sharphook is in alpha.
