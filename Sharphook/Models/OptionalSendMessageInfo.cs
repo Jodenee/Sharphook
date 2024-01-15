@@ -9,7 +9,7 @@ namespace Sharphook.Models
         public string? AvatarUrlOverride { get; set; }
         public uint? MessageFlags { get; set; }
         public string? ThreadName { get; set; }
-        public List<SharphookFile>? Files { get; set; }
+        public List<SharphookFile> Files { get; set; }
 
         public OptionalSendMessageInfo(
             bool? tts = null, 
@@ -25,7 +25,15 @@ namespace Sharphook.Models
             AvatarUrlOverride = avatarUrlOverride;
             MessageFlags = messageFlags;
             ThreadName = threadName;
-            Files = files;
+            Files = files ?? new List<SharphookFile>();
+        }
+
+        public async Task DisposeAsync()
+        {
+            foreach (SharphookFile file in Files)
+            {
+                await file.DisposeAsync();
+            }
         }
     }
 }
