@@ -52,9 +52,9 @@
             };
         }
 
-        public void Close()
+        public async Task DisposeAsync()
         {
-            Stream.Close();
+            await Stream.DisposeAsync();
         }
     }
 }
