@@ -6,7 +6,8 @@ namespace Sharphook.Models
     {
         public DateTime EditedAt { get; private set; }
 
-        public EditedThreadMessage(WebhookClient client, EditedThreadMessageObject editedThreadMessageObject) : base (client, editedThreadMessageObject)
+        public EditedThreadMessage(WebhookClient client, EditedThreadMessageObject editedThreadMessageObject) 
+            : base(client, editedThreadMessageObject)
         {
             EditedAt = DateTime.Parse(editedThreadMessageObject.edited_timestamp);
         }
