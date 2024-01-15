@@ -4,7 +4,7 @@ namespace Sharphook.Models
 {
 	public class PartialUser
 	{
-		private WebhookClient Client { get; set; }
+		WebhookClient Client { get; set; }
 		public ulong Id { get; private set; }
 		public string Username { get; private set; }
 		public string? AvatarHash { get; private set; }
