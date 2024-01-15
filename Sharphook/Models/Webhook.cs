@@ -5,7 +5,7 @@ namespace Sharphook.Models
 {
 	public class Webhook : PartialWebhook
 	{
-		private WebhookClient Client { get; set; }
+		WebhookClient Client { get; set; }
 		public Int16 Type { get; private set; }
 		public string Name { get; private set; }
 		public string GuildId { get; private set; }
@@ -14,7 +14,8 @@ namespace Sharphook.Models
 		public string? Avatar { get; private set; }
 		public PartialUser? User { get; private set; }
 
-		public Webhook(WebhookClient client, WebhookObject webhookResponce):base(client, Convert.ToUInt64(webhookResponce.id), webhookResponce.token) 
+		public Webhook(WebhookClient client, WebhookObject webhookResponce)
+			: base(client, Convert.ToUInt64(webhookResponce.id), webhookResponce.token) 
 		{
 			Client = client;
 			Type = webhookResponce.type;
