@@ -6,7 +6,8 @@ namespace Sharphook.Models
     {
         public uint Position { get; private set; }
 
-        public ThreadMessage(WebhookClient client, ThreadMessageObject threadMessageObject) : base(client, threadMessageObject)
+        public ThreadMessage(WebhookClient client, ThreadMessageObject threadMessageObject) 
+            : base(client, threadMessageObject)
         {
             Position = threadMessageObject.position;
         }
