@@ -78,7 +78,7 @@ namespace Sharphook.Models
 
             if (responseMessage.StatusCode != HttpStatusCode.TooManyRequests && remaining == "0")
             {
-                int waitTime = Convert.ToInt32(parseRatelimitHeader(responseMessage) * 1000);
+                int waitTime = Convert.ToInt32(parseRatelimitHeader(responseMessage) * 1_000);
 
                 await Task.Delay(waitTime);
 
@@ -88,7 +88,7 @@ namespace Sharphook.Models
             else if (responseMessage.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 int retryAfterInSeconds = Convert.ToInt32(responseMessage.Headers.GetValues("Retry-After").First());
-                int retryAfterInMilliseconds = retryAfterInSeconds * 1000;
+                int retryAfterInMilliseconds = retryAfterInSeconds * 1_000;
 
                 await Task.Delay(retryAfterInMilliseconds + 1_000);
 
