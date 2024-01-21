@@ -10,8 +10,8 @@ Sharphook is an asynchronous object oriented API wrapper for Discord's webhook A
 | .NET Version   | Compatible? |
 |:--------------:|:-----------:|
 | .NET 8 (Target)| **YES**	   |
-| .NET 7         | **UNSURE**  |
-| .NET 6         | **UNSURE**  |
+| .NET 7         | **NO**  |
+| .NET 6         | **NO**  |
 
 
 ## Examples
