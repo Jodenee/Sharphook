@@ -6,19 +6,11 @@ Sharphook is an asynchronous object oriented API wrapper for Discord's webhook A
 
 ## .NET Compatibility
 
-
 | .NET Version   | Compatible? |
 |:--------------:|:-----------:|
-<<<<<<< HEAD
 | .NET 8         | **YES**	   |
 | .NET 7         | **YES**     |
 | .NET 6         | **YES**     |
-=======
-| .NET 8 (Target)| **YES**	   |
-| .NET 7         | **NO**  |
-| .NET 6         | **NO**  |
->>>>>>> aca7ff10863e294ecf6d1451d4f2e5f643764342
-
 
 ## Examples
 
@@ -88,7 +80,7 @@ catch (SharphookHttpException exception)
 * Unzip the folder
 * Add Sharphook.dll as a reference to your project
 
-(Nuget support coming in v1.0.0)
+*(Nuget support coming in v1.0.0)*
 
 ## Dependencies
 
@@ -101,4 +93,4 @@ Sharphook is  under the [MIT license](LICENSE.txt).
 ## Disclaimers
 
 * Sharphook is just maintained for fun.
-* Sharphook is in alpha.
+* Sharphook is in pre-release.
