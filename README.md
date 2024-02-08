@@ -4,13 +4,33 @@
 
 Sharphook is an asynchronous object oriented API wrapper for Discord's webhook API.
 
-## .NET Compatibility
+## Installation
+
+### .NET Compatibility
 
 | .NET Version   | Compatible? |
 |:--------------:|:-----------:|
 | .NET 8         | **YES**	   |
 | .NET 7         | **YES**     |
 | .NET 6         | **YES**     |
+| .NET 5         | **NO**      |
+| .NET 3.1       | **NO**      |
+| .NET 3.0       | **NO**      |
+| .NET 2.2       | **NO**      |
+| .NET 2.1       | **NO**      |
+| .NET 2.0       | **NO**      |
+| .NET 1.1       | **NO**      |
+| .NET 1.0       | **NO**      |
+
+### Instructions
+
+* Go to [**releases**](https://github.com/Jodenee/Sharphook/releases)
+* Find the *latest* version
+* Download the folder with *your* .NET version
+* Unzip the folder
+* Add *Sharphook.dll* as a reference to your project
+
+*(Nuget support coming in v1.0.0)*
 
 ## Examples
 
@@ -64,6 +84,7 @@ PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 
 try
 {
+    // This will raise a 400 Bad Request
     await webhook.SendMessage("");
 }
 catch (SharphookHttpException exception)
@@ -71,20 +92,6 @@ catch (SharphookHttpException exception)
     Console.WriteLine($"{(int)exception.Response.StatusCode} {exception.Response.ReasonPhrase}"); // 400 Bad Request
 }
 ```
-
-## Installation
-
-* Go to [releases](https://github.com/Jodenee/Sharphook/releases)
-* Find the latest version
-* Download the folder with your .NET version
-* Unzip the folder
-* Add Sharphook.dll as a reference to your project
-
-*(Nuget support coming in v1.0.0)*
-
-## Dependencies
-
-*  [Json.NET](http://james.newtonking.com/json)
 
 ## License
 
