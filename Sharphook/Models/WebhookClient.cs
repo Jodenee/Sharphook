@@ -7,7 +7,7 @@ using Sharphook.Exceptions;
 using Sharphook.Models.Partials;
 using Sharphook.DataTypes;
 
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Sharphook.Models
 {
@@ -108,39 +108,39 @@ namespace Sharphook.Models
 		{
 			HttpResponseMessage responseMessage = await Request(HttpMethod.Get, new Uri(uri));
 
-            string jsonString = await responseMessage.Content.ReadAsStringAsync();
-            ReturnObject jsonData = JsonConvert.DeserializeObject<ReturnObject>(jsonString)!;
+            string responseBody = await responseMessage.Content.ReadAsStringAsync();
+            ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
             responseMessage.Dispose();
-            return jsonData;
+            return jsonResponseBody!;
         }
 
 		internal async Task<ReturnObject> Post<ReturnObject>(string uri, object requestBody)
 		{
-			string serializedRequestBody = JsonConvert.SerializeObject(requestBody);
+			string serializedRequestBody = JsonSerializer.Serialize(requestBody);
             StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
 
             HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), httpContent);
 
-            string jsonString = await responseMessage.Content.ReadAsStringAsync();
-            ReturnObject jsonData = JsonConvert.DeserializeObject<ReturnObject>(jsonString)!;
+            string responseBody = await responseMessage.Content.ReadAsStringAsync();
+            ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
             responseMessage.Dispose();
-            return jsonData;
+            return jsonResponseBody;
         }
 
 		internal async Task<ReturnObject> Patch<ReturnObject>(string uri, object requestBody)
 		{
-            string serializedRequestBody = JsonConvert.SerializeObject(requestBody);
+            string serializedRequestBody = JsonSerializer.Serialize(requestBody);
             StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
 
             HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), httpContent);
 
-            string jsonString = await responseMessage.Content.ReadAsStringAsync();
-            ReturnObject jsonData = JsonConvert.DeserializeObject<ReturnObject>(jsonString)!;
+            string responseBody = await responseMessage.Content.ReadAsStringAsync();
+            ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
             responseMessage.Dispose();
-            return jsonData;
+            return jsonResponseBody;
         }
 
 		internal async Task Delete(string uri)
@@ -153,7 +153,7 @@ namespace Sharphook.Models
 
         internal async Task<ReturnObject> PostMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files)
         {
-            string serializedRequestBody = JsonConvert.SerializeObject(requestBody);
+            string serializedRequestBody = JsonSerializer.Serialize(requestBody);
 
             using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
             using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
@@ -173,16 +173,16 @@ namespace Sharphook.Models
 
                 if (!responseMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responseMessage); }
 
-                string stringJsonData = await responseMessage.Content.ReadAsStringAsync();
-                ReturnObject jsonData = JsonConvert.DeserializeObject<ReturnObject>(stringJsonData)!;
+                string responseBody = await responseMessage.Content.ReadAsStringAsync();
+                ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
-                return jsonData;
+                return jsonResponseBody;
             }
         }
 
         internal async Task<ReturnObject> PatchMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files)
         {
-            string serializedRequestBody = JsonConvert.SerializeObject(requestBody);
+            string serializedRequestBody = JsonSerializer.Serialize(requestBody);
 
             using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
 			using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
@@ -202,10 +202,10 @@ namespace Sharphook.Models
 
                 if (!responseMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responseMessage); }
 
-                string stringJsonData = await responseMessage.Content.ReadAsStringAsync();
-                ReturnObject jsonData = JsonConvert.DeserializeObject<ReturnObject>(stringJsonData)!;
+                string responseBody = await responseMessage.Content.ReadAsStringAsync();
+                ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
-                return jsonData;
+                return jsonResponseBody;
             }
         }
 
