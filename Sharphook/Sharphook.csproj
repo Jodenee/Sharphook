@@ -7,13 +7,8 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <SignAssembly>False</SignAssembly>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <RepositoryUrl>https://github.com/Jodenee/Sharphook</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Jodenee/Sharphook</PackageProjectUrl>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
+	
 </Project>
