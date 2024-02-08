@@ -239,7 +239,7 @@ namespace Sharphook.Models.Partials
             return new ThreadMessage(Client, threadMessageObject);
         }
 
-        public async Task<Webhook> EditWebhookNameAsync(string newName)
+        public async Task<Webhook> EditNameAsync(string newName)
 		{
 			object requestBody = new
 			{
@@ -252,7 +252,7 @@ namespace Sharphook.Models.Partials
             return webhook;
         }
 		
-        public async Task<Webhook> EditWebhookAvatarAsync(string avatarFilePath, FileContentType avatarFileContentType)
+        public async Task<Webhook> EditAvatarAsync(string avatarFilePath, FileContentType avatarFileContentType)
         {
             byte[] imageByteArray = await File.ReadAllBytesAsync(avatarFilePath);
             string base64ImageData = Convert.ToBase64String(imageByteArray);
