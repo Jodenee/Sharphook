@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using System.Net;
 using System.Net.Http.Headers;
 
@@ -6,8 +7,6 @@ using Sharphook.Models.ResponseObjects;
 using Sharphook.Exceptions;
 using Sharphook.Models.Partials;
 using Sharphook.DataTypes;
-
-using System.Text.Json;
 
 namespace Sharphook.Models
 {
@@ -25,7 +24,7 @@ namespace Sharphook.Models
             requestLock.Dispose();
 		}
 
-		private void throwExceptionFromStatusCode(HttpResponseMessage httpResponseMessage)
+		private void ThrowExceptionFromStatusCode(HttpResponseMessage httpResponseMessage)
 		{
 			throw httpResponseMessage.StatusCode switch
 			{
@@ -38,14 +37,13 @@ namespace Sharphook.Models
 			};
 		}
 
-        internal float parseRatelimitHeader(HttpResponseMessage responseMessage, bool useClock = false)
+        internal float ParseRatelimitHeader(HttpResponseMessage responseMessage, bool useClock = false)
         {
             HttpHeaders headers = responseMessage.Headers;
-            IEnumerable<string> resetAfter;
 
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            bool resetAfterHeadersExist = headers.TryGetValues("X-Ratelimit-Reset-After", out resetAfter);
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            bool resetAfterHeadersExist = headers.TryGetValues("X-Ratelimit-Reset-After", out IEnumerable<string> resetAfter);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
             if (useClock || !resetAfterHeadersExist)
             {
@@ -78,7 +76,7 @@ namespace Sharphook.Models
 
             if (responseMessage.StatusCode != HttpStatusCode.TooManyRequests && remaining == "0")
             {
-                int waitTime = Convert.ToInt32(parseRatelimitHeader(responseMessage) * 1_000);
+                int waitTime = Convert.ToInt32(ParseRatelimitHeader(responseMessage) * 1_000);
 
                 await Task.Delay(waitTime);
 
@@ -96,7 +94,7 @@ namespace Sharphook.Models
                 return await Request(httpMethod, uri, content, acceptContentType);
             }
 
-            if (!responseMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responseMessage); }
+            if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
 
             message.Dispose();
             requestLock.Release();
@@ -171,7 +169,7 @@ namespace Sharphook.Models
 
                 HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), formDataContent);
 
-                if (!responseMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responseMessage); }
+                if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
 
                 string responseBody = await responseMessage.Content.ReadAsStringAsync();
                 ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
@@ -200,7 +198,7 @@ namespace Sharphook.Models
 
                 HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), formDataContent);
 
-                if (!responseMessage.IsSuccessStatusCode) { throwExceptionFromStatusCode(responseMessage); }
+                if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
 
                 string responseBody = await responseMessage.Content.ReadAsStringAsync();
                 ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
