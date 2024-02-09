@@ -43,7 +43,7 @@ namespace Sharphook.Models
 
             foreach (EmbedObject embedObject in messageObject.embeds)
             {
-                Embeds.Add(embedObject._ToEmbed());
+                Embeds.Add(embedObject.ToEmbed());
             }
 
             foreach (AttachmentObject attachmentObject in messageObject.attachments)
