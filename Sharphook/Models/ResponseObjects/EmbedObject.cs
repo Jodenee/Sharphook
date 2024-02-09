@@ -1,5 +1,7 @@
 ﻿using Sharphook.DataTypes;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Sharphook.Models.ResponseObjects
 {
     public class EmbedObject
@@ -15,7 +17,7 @@ namespace Sharphook.Models.ResponseObjects
         public EmbedObjectAuthor? author { get; set; }
         public List<EmbedObjectField>? fields { get; set; }
 
-        internal Embed _ToEmbed()
+        internal Embed ToEmbed()
         {
             Embed embed = new Embed(title, description, url);
 
@@ -63,31 +65,51 @@ namespace Sharphook.Models.ResponseObjects
 
     public class EmbedObjectFooter
     {
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string text { get; set; }
         public string? icon_url { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore IDE1006 // Naming Styles
     }
 
     public class EmbedObjectImage
     {
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string url { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore IDE1006 // Naming Styles
     }
 
     public class EmbedObjectThumbnail
     {
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string url { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore IDE1006 // Naming Styles
     }
 
     public class EmbedObjectAuthor
     {
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string name { get; set; }
         public string? url { get; set; }
         public string? icon_url { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore IDE1006 // Naming Styles
     }
 
     public class EmbedObjectField
     {
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string name { get; set; }
         public string value { get; set; }
         public bool? inline { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning restore IDE1006 // Naming Styles
     }
 }
