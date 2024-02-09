@@ -20,13 +20,13 @@ jobs:
         
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET versions
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ matrix.dotnet }}
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
+    - name: Build Sharphook
       run: dotnet build Sharphook --no-restore
-    - name: Test
+    - name: Test Sharphook
       run: dotnet test Sharphook --no-build --verbosity normal
