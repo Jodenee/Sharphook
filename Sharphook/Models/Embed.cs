@@ -93,7 +93,7 @@ namespace Sharphook.Models
             return totalCharacters;
         }
 
-        internal EmbedObject _ToEmbedObject()
+        internal EmbedObject ToEmbedObject()
         {
             EmbedObject embedObject = new EmbedObject();
 
