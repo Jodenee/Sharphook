@@ -34,7 +34,7 @@ namespace Sharphook.Models.Partials
 			{
 				foreach (Embed embed in embeds)
 				{
-					embedObjects.Add(embed._ToEmbedObject());
+					embedObjects.Add(embed.ToEmbedObject());
 				}
 			}
 
@@ -81,7 +81,7 @@ namespace Sharphook.Models.Partials
 			{
 				foreach (Embed embed in embeds)
 				{
-					embedObjects.Add(embed._ToEmbedObject());
+					embedObjects.Add(embed.ToEmbedObject());
 				}
 			}
 
@@ -128,7 +128,7 @@ namespace Sharphook.Models.Partials
 			{
 				foreach (Embed embed in embeds)
 				{
-					embedObjects.Add(embed._ToEmbedObject());
+					embedObjects.Add(embed.ToEmbedObject());
 				}
 			}
 
@@ -174,7 +174,7 @@ namespace Sharphook.Models.Partials
 			{
 				foreach (Embed embed in embeds)
 				{
-					embedObjects.Add(embed._ToEmbedObject());
+					embedObjects.Add(embed.ToEmbedObject());
 				}
 			}
 
