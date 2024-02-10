@@ -9,7 +9,7 @@ namespace Sharphook.Models
         public EditedThreadMessage(WebhookClient client, EditedThreadMessageObject editedThreadMessageObject) 
             : base(client, editedThreadMessageObject)
         {
-            EditedAt = DateTime.Parse(editedThreadMessageObject.edited_timestamp);
+            EditedAt = DateTime.Parse(editedThreadMessageObject.EditedAt);
         }
     }
 }
