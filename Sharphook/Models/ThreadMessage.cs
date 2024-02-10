@@ -9,7 +9,7 @@ namespace Sharphook.Models
         public ThreadMessage(WebhookClient client, ThreadMessageObject threadMessageObject) 
             : base(client, threadMessageObject)
         {
-            Position = threadMessageObject.position;
+            Position = threadMessageObject.Position;
         }
     }
 }
