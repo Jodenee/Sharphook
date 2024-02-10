@@ -14,7 +14,7 @@ namespace Sharphook.Models
         public List<Embed> Embeds { get; private set; }
         public bool Pinned { get; private set; }
         public bool MentionEveryone { get; private set; }
-        public bool TTS { get; private set; }
+        public bool IsTTS { get; private set; }
         public List<Attachment> Attachments { get; private set; }
         public int Flags { get; private set; }
         public ulong WebhookId { get; private set; }
@@ -27,26 +27,26 @@ namespace Sharphook.Models
         public Message(WebhookClient client, MessageObject messageObject)
         {
             Client = client;
-            Id = Convert.ToUInt64(messageObject.id);
-            ChannelId = Convert.ToUInt64(messageObject.channel_id);
-            Author = new PartialUser(client, messageObject.author);
-            Content = messageObject.content;
-            CreatedAt = DateTime.Parse(messageObject.timestamp);
-            Type = messageObject.type;
+            Id = Convert.ToUInt64(messageObject.Id);
+            ChannelId = Convert.ToUInt64(messageObject.ChannelId);
+            Author = new PartialUser(client, messageObject.Author);
+            Content = messageObject.Content;
+            CreatedAt = DateTime.Parse(messageObject.CreatedAt);
+            Type = messageObject.Type;
             Embeds = new List<Embed>();
-            Pinned = messageObject.pinned;
-            MentionEveryone = messageObject.mention_everyone;
-            TTS = messageObject.tts;
+            Pinned = messageObject.Pinned;
+            MentionEveryone = messageObject.MentionEveryone;
+            IsTTS = messageObject.IsTTS;
             Attachments = new List<Attachment>();
-            Flags = messageObject.flags;
-            WebhookId = Convert.ToUInt64(messageObject.webhook_id);
+            Flags = messageObject.Flags;
+            WebhookId = Convert.ToUInt64(messageObject.WebhookId);
 
-            foreach (EmbedObject embedObject in messageObject.embeds)
+            foreach (EmbedObject embedObject in messageObject.Embeds)
             {
                 Embeds.Add(embedObject.ToEmbed());
             }
 
-            foreach (AttachmentObject attachmentObject in messageObject.attachments)
+            foreach (AttachmentObject attachmentObject in messageObject.Attachments)
             {
                 Attachments.Add(new Attachment(attachmentObject));
             }
