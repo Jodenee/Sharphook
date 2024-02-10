@@ -27,46 +27,46 @@ namespace Sharphook.Models
 
         internal Embed(EmbedObject embedObject) 
         {
-            Title = embedObject.title;
-            Description = embedObject.description;
-            Url = embedObject.url;
+            Title = embedObject.Title;
+            Description = embedObject.Description;
+            Url = embedObject.Url;
             Fields = new List<EmbedField>();
 
-            if (embedObject.color != null)
+            if (embedObject.Color != null)
             {
-                Color = new SharphookColor((uint)embedObject.color);
+                Color = new SharphookColor((uint)embedObject.Color);
             }
 
-            if (embedObject.timestamp != null)
+            if (embedObject.Timestamp != null)
             {
-                Timestamp = DateTime.Parse(embedObject.timestamp);
+                Timestamp = DateTime.Parse(embedObject.Timestamp);
             }
 
-            if (embedObject.footer != null)
+            if (embedObject.Footer != null)
             {
-                Footer = new EmbedFooter(embedObject.footer.text, embedObject.footer.icon_url);
+                Footer = new EmbedFooter(embedObject.Footer.Text, embedObject.Footer.IconUrl);
             }
 
-            if (embedObject.image != null)
+            if (embedObject.Image != null)
             {
-                Image = new EmbedImage(embedObject.image.url);
+                Image = new EmbedImage(embedObject.Image.Url);
             }
 
-            if (embedObject.thumbnail != null)
+            if (embedObject.Thumbnail != null)
             {
-                Thumbnail = new EmbedThumbnail(embedObject.thumbnail.url);
+                Thumbnail = new EmbedThumbnail(embedObject.Thumbnail.Url);
             }
 
-            if (embedObject.author != null)
+            if (embedObject.Author != null)
             {
-                Author = new EmbedAuthor(embedObject.author.name, embedObject.author.url, embedObject.author.icon_url);
+                Author = new EmbedAuthor(embedObject.Author.Name, embedObject.Author.Url, embedObject.Author.IconUrl);
             }
 
-            if (embedObject.fields != null)
+            if (embedObject.Fields != null)
             {
-                foreach (EmbedObjectField fieldObject in embedObject.fields)
+                foreach (EmbedObjectField fieldObject in embedObject.Fields)
                 {
-                    Fields.Add(new EmbedField(fieldObject.name, fieldObject.value, fieldObject.inline));
+                    Fields.Add(new EmbedField(fieldObject.Name, fieldObject.Value, fieldObject.Inline));
                 }
             }
         }
@@ -97,58 +97,58 @@ namespace Sharphook.Models
         {
             EmbedObject embedObject = new EmbedObject();
 
-            embedObject.title = Title;
-            embedObject.description = Description;
-            embedObject.url = Url;
-            embedObject.fields = new List<EmbedObjectField>();
+            embedObject.Title = Title;
+            embedObject.Description = Description;
+            embedObject.Url = Url;
+            embedObject.Fields = new List<EmbedObjectField>();
 
             if (Color != null)
             {
-                embedObject.color = Color.Value;
+                embedObject.Color = Color.Value;
             }
 
             if (Timestamp != null)
             {
-                embedObject.timestamp = Timestamp?.ToString("o");
+                embedObject.Timestamp = Timestamp?.ToString("o");
             }
 
             if (Footer != null)
             {
                 EmbedObjectFooter embedObjectFooter = new EmbedObjectFooter();
 
-                embedObjectFooter.text = Footer.Text;
-                embedObjectFooter.icon_url = Footer.IconUrl;
+                embedObjectFooter.Text = Footer.Text;
+                embedObjectFooter.IconUrl = Footer.IconUrl;
 
-                embedObject.footer = embedObjectFooter;
+                embedObject.Footer = embedObjectFooter;
             }
 
             if (Image != null)
             {
                 EmbedObjectImage embedObjectImage = new EmbedObjectImage();
 
-                embedObjectImage.url = Image.Url;
+                embedObjectImage.Url = Image.Url;
 
-                embedObject.image = embedObjectImage;
+                embedObject.Image = embedObjectImage;
             }
 
             if (Thumbnail != null)
             {
                 EmbedObjectThumbnail embedObjectThumbnail = new EmbedObjectThumbnail();
 
-                embedObjectThumbnail.url = Thumbnail.Url;
+                embedObjectThumbnail.Url = Thumbnail.Url;
 
-                embedObject.thumbnail = embedObjectThumbnail;
+                embedObject.Thumbnail = embedObjectThumbnail;
             }
 
             if (Author != null)
             {
                 EmbedObjectAuthor embedObjectAuthor = new EmbedObjectAuthor();
 
-                embedObjectAuthor.name = Author.Name;
-                embedObjectAuthor.url = Author.Url;
-                embedObjectAuthor.icon_url = Author.IconUrl;
+                embedObjectAuthor.Name = Author.Name;
+                embedObjectAuthor.Url = Author.Url;
+                embedObjectAuthor.IconUrl = Author.IconUrl;
 
-                embedObject.author = embedObjectAuthor;
+                embedObject.Author = embedObjectAuthor;
             }
 
             if (Fields != null)
@@ -157,11 +157,11 @@ namespace Sharphook.Models
                 {
                     EmbedObjectField embedObjectField = new EmbedObjectField();
 
-                    embedObjectField.name = field.Name;
-                    embedObjectField.value = field.Value;
-                    embedObjectField.inline = field.InLine;
+                    embedObjectField.Name = field.Name;
+                    embedObjectField.Value = field.Value;
+                    embedObjectField.Inline = field.InLine;
 
-                    embedObject.fields.Add(embedObjectField);
+                    embedObject.Fields.Add(embedObjectField);
                 }
             }
 
