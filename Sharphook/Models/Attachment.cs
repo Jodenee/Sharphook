@@ -32,16 +32,16 @@ namespace Sharphook.Models
 
 		public Attachment(AttachmentObject attachmentObject) 
 		{
-			Id = attachmentObject.id;
-			FileName = attachmentObject.filename;
-			Description = attachmentObject.description;
-			ContentType = attachmentObject.content_type;
-			Size = attachmentObject.size;
-			Url = attachmentObject.url;
-			ProxyUrl = attachmentObject.proxy_url;
-			Height = attachmentObject.height;
-			Width = attachmentObject.width;
-			Flags = attachmentObject.flags ?? 0;
+			Id = Convert.ToUInt64(attachmentObject.Id);
+			FileName = attachmentObject.Filename;
+			Description = attachmentObject.Description;
+			ContentType = attachmentObject.ContentType;
+			Size = attachmentObject.Size;
+			Url = attachmentObject.Url;
+			ProxyUrl = attachmentObject.ProxyUrl;
+			Height = attachmentObject.Height;
+			Width = attachmentObject.Width;
+			Flags = attachmentObject.Flags ?? 0;
         }
 	}
 }
