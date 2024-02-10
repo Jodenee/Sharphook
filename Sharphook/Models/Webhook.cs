@@ -12,20 +12,20 @@ namespace Sharphook.Models
 		public string ChannelId { get; private set; }
 		public string? ApplicationId { get; private set; }
 		public string? Avatar { get; private set; }
-		public PartialUser? User { get; private set; }
+		public PartialUser? Creator { get; private set; }
 
 		public Webhook(WebhookClient client, WebhookObject webhookResponce)
-			: base(client, Convert.ToUInt64(webhookResponce.id), webhookResponce.token) 
+			: base(client, Convert.ToUInt64(webhookResponce.Id), webhookResponce.Token) 
 		{
 			Client = client;
-			Type = webhookResponce.type;
-			Name = webhookResponce.name;
-			GuildId = webhookResponce.guild_id;
-			ChannelId = webhookResponce.channel_id;
-			ApplicationId = webhookResponce.application_id;
-			Avatar = webhookResponce.avatar;
+			Type = webhookResponce.Type;
+			Name = webhookResponce.Name;
+			GuildId = webhookResponce.GuildId;
+			ChannelId = webhookResponce.ChannelId;
+			ApplicationId = webhookResponce.ApplicationId;
+			Avatar = webhookResponce.Avatar;
 
-			if (webhookResponce.user != null) { User = new PartialUser(client, webhookResponce.user); }
+			if (webhookResponce.Creator != null) { Creator = new PartialUser(client, webhookResponce.Creator); }
 		}
 	}
 }
