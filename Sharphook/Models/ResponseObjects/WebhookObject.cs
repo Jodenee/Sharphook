@@ -1,21 +1,41 @@
-﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable IDE1006 // Naming Styles
+﻿using Sharphook.Models.ResponseObjects.PartialObjects;
+using System.Text.Json.Serialization;
 
-using Sharphook.Models.ResponseObjects.PartialObjects;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace Sharphook.Models.ResponseObjects
 {
     public class WebhookObject
     {
-        public Int16 type { get; set; }
-        public string id { get; set; }
-        public string? application_id { get;  set; }
-        public string token { get; set; }
-        public string url { get; set; }
-        public string name { get; set; }
-        public string guild_id { get; set; }
-        public string channel_id { get; set; }
-        public string? avatar { get; set; }
-        public PartialUserObject? user { get; set; }
+        [JsonPropertyName("type")]
+        public Int16 Type { get; set; }
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("application_id")]
+        public string? ApplicationId { get; set; }
+
+        [JsonPropertyName("token")]
+        public string Token { get; set; }
+
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("guild_id")]
+        public  string GuildId { get; set; }
+
+        [JsonPropertyName("channel_id")]
+        public string ChannelId { get; set; }
+
+        [JsonPropertyName("avatar")]
+        public string? Avatar { get; set; }
+
+        [JsonPropertyName("user")]
+        public PartialUserObject? Creator { get; set; }
     }
+
 }

@@ -1,61 +1,81 @@
-﻿using Sharphook.DataTypes;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-#pragma warning disable IDE1006 // Naming Styles
+using Sharphook.DataTypes;
+using System.Text.Json.Serialization;
 
 namespace Sharphook.Models.ResponseObjects
 {
     public class EmbedObject
     {
-        public string? title { get; set; }
-        public string? description { get; set; }
-        public string? url { get; set; }
-        public uint? color { get; set; }
-        public string? timestamp { get; set; }
-        public EmbedObjectFooter? footer { get; set; }
-        public EmbedObjectImage? image { get; set; }
-        public EmbedObjectThumbnail? thumbnail { get; set; }
-        public EmbedObjectAuthor? author { get; set; }
-        public List<EmbedObjectField>? fields { get; set; }
+        [JsonPropertyName("title")]
+        public string? Title { get; set; }
+
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        [JsonPropertyName("url")]
+        public string? Url { get; set; }
+
+        [JsonPropertyName("color")]
+        public uint? Color { get; set; }
+
+        [JsonPropertyName("timestamp")]
+        public string? Timestamp { get; set; }
+
+        [JsonPropertyName("footer")]
+        public EmbedObjectFooter? Footer { get; set; }
+
+        [JsonPropertyName("image")]
+        public EmbedObjectImage? Image { get; set; }
+
+        [JsonPropertyName("thumbnail")]
+        public EmbedObjectThumbnail? Thumbnail { get; set; }
+
+        [JsonPropertyName("author")]
+        public EmbedObjectAuthor? Author { get; set; }
+
+        [JsonPropertyName("fields")]
+        public List<EmbedObjectField>? Fields { get; set; }
 
         internal Embed ToEmbed()
         {
-            Embed embed = new Embed(title, description, url);
+            Embed embed = new Embed(Title, Description, Url);
 
-            if (color != null)
+            if (Color != null)
             {
-                embed.Color = new SharphookColor((uint)color);
+                embed.Color = new SharphookColor((uint)Color);
             }
 
-            if (timestamp != null)
+            if (Timestamp != null)
             {
-                embed.Timestamp = DateTime.Parse(timestamp);
+                embed.Timestamp = DateTime.Parse(Timestamp);
             }
 
-            if (footer != null)
+            if (Footer != null)
             {
-                embed.Footer = new EmbedFooter(footer.text, footer.icon_url);
+                embed.Footer = new EmbedFooter(Footer.Text, Footer.IconUrl);
             }
 
-            if (image != null)
+            if (Image != null)
             {
-                embed.Image = new EmbedImage(image.url);
+                embed.Image = new EmbedImage(Image.Url);
             }
 
-            if (thumbnail != null)
+            if (Thumbnail != null)
             {
-                embed.Thumbnail = new EmbedThumbnail(thumbnail.url);
+                embed.Thumbnail = new EmbedThumbnail(Thumbnail.Url);
             }
 
-            if (author != null)
+            if (Author != null)
             {
-                embed.Author = new EmbedAuthor(author.name, author.url, author.icon_url);
+                embed.Author = new EmbedAuthor(Author.Name, Author.Url, Author.IconUrl);
             }
 
-            if (fields != null)
+            if (Fields != null)
             {
-                foreach (EmbedObjectField fieldObject in fields)
+                foreach (EmbedObjectField fieldObject in Fields)
                 {
-                    embed.Fields.Add(new EmbedField(fieldObject.name, fieldObject.value, fieldObject.inline));
+                    embed.Fields.Add(new EmbedField(fieldObject.Name, fieldObject.Value, fieldObject.Inline));
                 }
             }
 
@@ -65,51 +85,46 @@ namespace Sharphook.Models.ResponseObjects
 
     public class EmbedObjectFooter
     {
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public string text { get; set; }
-        public string? icon_url { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore IDE1006 // Naming Styles
+        [JsonPropertyName("text")]
+        public string Text { get; set; }
+
+        [JsonPropertyName("icon_url")]
+        public string? IconUrl { get; set; }
     }
 
     public class EmbedObjectImage
     {
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public string url { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore IDE1006 // Naming Styles
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
     }
 
     public class EmbedObjectThumbnail
     {
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public string url { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore IDE1006 // Naming Styles
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
     }
 
     public class EmbedObjectAuthor
     {
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public string name { get; set; }
-        public string? url { get; set; }
-        public string? icon_url { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore IDE1006 // Naming Styles
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("url")]
+        public string? Url { get; set; }
+
+        [JsonPropertyName("icon_url")]
+        public string? IconUrl { get; set; }
     }
 
     public class EmbedObjectField
     {
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public string name { get; set; }
-        public string value { get; set; }
-        public bool? inline { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning restore IDE1006 // Naming Styles
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("value")]
+        public string Value { get; set; }
+
+        [JsonPropertyName("inline")]
+        public bool? Inline { get; set; }
     }
 }

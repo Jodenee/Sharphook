@@ -1,19 +1,39 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable IDE1006 // Naming Styles
+
+using System.Text.Json.Serialization;
 
 namespace Sharphook.Models.ResponseObjects
 {
     public class AttachmentObject
     {
-        public ulong id { get; set; }
-        public string filename { get; set; }
-        public string? description { get; set; }
-        public string? content_type { get; set; }
-        public int size { get; set; }
-        public string url { get; set; }
-        public string proxy_url { get; set; }
-        public int? height { get; set; }
-        public int? width { get; set; }
-        public int? flags { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("filename")]
+        public string Filename { get; set; }
+
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        [JsonPropertyName("content_type")]
+        public string? ContentType { get; set; }
+
+        [JsonPropertyName("size")]
+        public int Size { get; set; }
+
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
+
+        [JsonPropertyName("proxy_url")]
+        public string ProxyUrl { get; set; }
+
+        [JsonPropertyName("height")]
+        public int? Height { get; set; }
+
+        [JsonPropertyName("width")]
+        public int? Width { get; set; }
+
+        [JsonPropertyName("flags")]
+        public int? Flags { get; set; }
     }
 }

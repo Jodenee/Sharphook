@@ -1,9 +1,10 @@
-﻿#pragma warning disable IDE1006 // Naming Styles
+﻿using System.Text.Json.Serialization;
 
 namespace Sharphook.Models.ResponseObjects
 {
     public class ThreadMessageObject : MessageObject
     {
-        public uint position { get; set; }
+        [JsonPropertyName("position")]
+        public uint Position { get; set; }
     }
 }

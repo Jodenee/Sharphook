@@ -1,10 +1,12 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable IDE1006 // Naming Styles
+
+using System.Text.Json.Serialization;
 
 namespace Sharphook.Models.ResponseObjects
 {
     public class EditedThreadMessageObject : ThreadMessageObject
     {
-        public string edited_timestamp { get; set; }
+        [JsonPropertyName("edited_timestamp")]
+        public string EditedAt { get; set; }
     }
 }
