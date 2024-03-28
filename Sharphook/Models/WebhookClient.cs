@@ -2,230 +2,292 @@ using System.Text;
 using System.Text.Json;
 using System.Net;
 using System.Net.Http.Headers;
-
-using Sharphook.Models.ResponseObjects;
+using System.Text.RegularExpressions;
 using Sharphook.Exceptions;
+using Sharphook.Models.ResponseObjects;
 using Sharphook.Models.Partials;
-using Sharphook.DataTypes;
 
-namespace Sharphook.Models
+namespace Sharphook.Models;
+
+public class WebhookClient
 {
-	public class WebhookClient
+	readonly static HttpClient HttpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
+	readonly static SemaphoreSlim requestLock = new SemaphoreSlim(1, 1);
+	public readonly byte ApiVersion = 10;
+
+	public WebhookClient() { }
+
+	public void Dispose()
 	{
-        readonly static HttpClient HttpClient = new HttpClient();
-		readonly static SemaphoreSlim requestLock = new SemaphoreSlim(1, 1);
-        public readonly byte ApiVersion = 10;
+		HttpClient.Dispose();
+		requestLock.Dispose();
+	}
 
-		public WebhookClient() {}
-
-		public void Dispose()
+	private void ThrowExceptionFromStatusCode(HttpResponseMessage httpResponseMessage)
+	{
+		throw httpResponseMessage.StatusCode switch
 		{
-			HttpClient.Dispose();
-            requestLock.Dispose();
-		}
+			HttpStatusCode.BadRequest => new BadRequest(httpResponseMessage),
+			HttpStatusCode.Unauthorized => new Unauthorized(httpResponseMessage),
+			HttpStatusCode.Forbidden => new Forbidden(httpResponseMessage),
+			HttpStatusCode.NotFound => new NotFound(httpResponseMessage),
+			HttpStatusCode.BadGateway => new BadGateway(httpResponseMessage),
+			_ => new SharphookHttpException(httpResponseMessage)
+		};
+	}
 
-		private void ThrowExceptionFromStatusCode(HttpResponseMessage httpResponseMessage)
-		{
-			throw httpResponseMessage.StatusCode switch
-			{
-				HttpStatusCode.BadRequest => new BadRequest(httpResponseMessage),
-				HttpStatusCode.Unauthorized => new Unauthorized(httpResponseMessage),
-				HttpStatusCode.Forbidden => new Forbidden(httpResponseMessage),
-				HttpStatusCode.NotFound => new NotFound(httpResponseMessage),
-				HttpStatusCode.BadGateway => new BadGateway(httpResponseMessage),
-				_ => new SharphookHttpException(httpResponseMessage)
-			};
-		}
-
-        internal float ParseRatelimitHeader(HttpResponseMessage responseMessage, bool useClock = false)
-        {
-            HttpHeaders headers = responseMessage.Headers;
+	internal float ParseRatelimitHeader(HttpResponseMessage responseMessage, bool useClock = false)
+	{
+		HttpResponseHeaders headers = responseMessage.Headers;
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            bool resetAfterHeadersExist = headers.TryGetValues("X-Ratelimit-Reset-After", out IEnumerable<string> resetAfter);
+		bool resetAfterHeadersExist = headers.TryGetValues("X-Ratelimit-Reset-After", out IEnumerable<string> resetAfter);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
-            if (useClock || !resetAfterHeadersExist)
-            {
-                long reset = Convert.ToInt64(headers.GetValues("X-Ratelimit-Reset").First());
-                DateTime utcNow = DateTime.UtcNow;
-                DateTimeOffset resetOffset = DateTimeOffset.FromUnixTimeSeconds(reset);
-
-                return Convert.ToSingle((resetOffset - utcNow).TotalSeconds);
-            }
-
-
-            return Convert.ToSingle(resetAfter!.First());
-        }
-
-		internal async Task<HttpResponseMessage> Request(HttpMethod httpMethod, Uri uri, HttpContent? content = null, string acceptContentType = "application/json")
+		if (useClock || !resetAfterHeadersExist)
 		{
-            await requestLock.WaitAsync();
+			long reset = Convert.ToInt64(headers.GetValues("X-Ratelimit-Reset").First());
+			DateTime utcNow = DateTime.UtcNow;
+			DateTimeOffset resetOffset = DateTimeOffset.FromUnixTimeSeconds(reset);
 
-            HttpRequestMessage message = new HttpRequestMessage
+			return Convert.ToSingle((resetOffset - utcNow).TotalSeconds);
+		}
+
+
+		return Convert.ToSingle(resetAfter!.First());
+	}
+
+	internal async Task<HttpResponseMessage> Request(
+		HttpMethod httpMethod,
+		Uri uri,
+		List<NameValueHeaderValue>? headers,
+		HttpContent? content = null,
+		string acceptContentType = "application/json"
+	)
+	{
+		await requestLock.WaitAsync();
+
+		HttpRequestMessage message = new HttpRequestMessage
+		{
+			RequestUri = uri,
+			Method = httpMethod,
+			Content = content
+		};
+		message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptContentType));
+
+		if (headers is not null)
+		{
+			foreach (NameValueHeaderValue header in headers)
 			{
-				RequestUri = uri,
-				Method = httpMethod,
-				Content = content
-			};
-            message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptContentType));
+				message.Headers.Add(header.Name, header.Value);
+			}
+		}
 
-            HttpResponseMessage responseMessage = await HttpClient.SendAsync(message);
+        HttpResponseMessage responseMessage = await HttpClient.SendAsync(message);
 
-            string remaining = responseMessage.Headers.GetValues("X-Ratelimit-Remaining").First() ?? "0";
+		string remaining = responseMessage.Headers.GetValues("X-Ratelimit-Remaining").First() ?? "0";
 
-            if (responseMessage.StatusCode != HttpStatusCode.TooManyRequests && remaining == "0")
-            {
-                int waitTime = Convert.ToInt32(ParseRatelimitHeader(responseMessage) * 1_000);
+		if (responseMessage.StatusCode != HttpStatusCode.TooManyRequests && remaining == "0")
+		{
+			int waitTime = Convert.ToInt32(ParseRatelimitHeader(responseMessage) * 1_000);
 
-                await Task.Delay(waitTime);
+			await Task.Delay(waitTime);
 
-                requestLock.Release();
-                return await Request(httpMethod, uri, content, acceptContentType);
-            }
-            else if (responseMessage.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                int retryAfterInSeconds = Convert.ToInt32(responseMessage.Headers.GetValues("Retry-After").First());
-                int retryAfterInMilliseconds = retryAfterInSeconds * 1_000;
+			message.Dispose();
+			requestLock.Release();
+			return await Request(httpMethod, uri, headers, content, acceptContentType);
+		}
+		else if (responseMessage.StatusCode == HttpStatusCode.TooManyRequests)
+		{
+			int retryAfterInSeconds = Convert.ToInt32(responseMessage.Headers.GetValues("Retry-After").First());
+			int retryAfterInMilliseconds = retryAfterInSeconds * 1_000;
 
-                await Task.Delay(retryAfterInMilliseconds + 1_000);
+			await Task.Delay(retryAfterInMilliseconds + 1_000);
 
-                requestLock.Release();
-                return await Request(httpMethod, uri, content, acceptContentType);
-            }
+			message.Dispose();
+			requestLock.Release();
+			return await Request(httpMethod, uri, headers, content, acceptContentType);
+		}
 
-            if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
+		if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
 
-            message.Dispose();
-            requestLock.Release();
+		message.Dispose();
+		requestLock.Release();
 
-			return responseMessage;
-        }
+		return responseMessage;
+	}
+
+	internal async Task<ReturnObject> Get<ReturnObject>(string uri, List<NameValueHeaderValue>? headers = null)
+	{
+		HttpResponseMessage responseMessage = await Request(HttpMethod.Get, new Uri(uri), headers);
+
+		string responseBody = await responseMessage.Content.ReadAsStringAsync();
+		ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+
+		responseMessage.Dispose();
+		return jsonResponseBody!;
+	}
+
+	internal async Task<ReturnObject> Post<ReturnObject>(string uri, object requestBody, List<NameValueHeaderValue>? headers = null)
+	{
+		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
+		StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
+
+		HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), headers, httpContent);
+
+		string responseBody = await responseMessage.Content.ReadAsStringAsync();
+		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+
+		responseMessage.Dispose();
+		return jsonResponseBody;
+	}
+
+	internal async Task<ReturnObject> Patch<ReturnObject>(string uri, object requestBody, List<NameValueHeaderValue>? headers = null)
+	{
+		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
+		StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
+
+		HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), headers, httpContent);
+
+		string responseBody = await responseMessage.Content.ReadAsStringAsync();
+		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+
+		responseMessage.Dispose();
+		return jsonResponseBody;
+	}
+
+	internal async Task Delete(string uri, List<NameValueHeaderValue> headers)
+	{
+		HttpResponseMessage responseMessage = await Request(HttpMethod.Delete, new Uri(uri), headers);
+		responseMessage.Dispose();
+	}
+
+	// Multipart
+
+	internal async Task<ReturnObject> PostMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
+	{
+		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
+		long totalFileUploadSize = 0;
+
+		foreach (SharphookFile file in files)
+		{
+			totalFileUploadSize += file.Stream.Length;
+		}
 		
-		internal async Task<ReturnObject> Get<ReturnObject>(string uri)
+		if (totalFileUploadSize > 25_000_000) { throw new ArgumentException("Files too big to upload. Make sure the total size of the files you are uploading is under 25MB."); }
+
+		using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
+		using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
 		{
-			HttpResponseMessage responseMessage = await Request(HttpMethod.Get, new Uri(uri));
+			formDataContent.Add(httpContent, "payload_json");
 
-            string responseBody = await responseMessage.Content.ReadAsStringAsync();
-            ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
-
-            responseMessage.Dispose();
-            return jsonResponseBody!;
-        }
-
-		internal async Task<ReturnObject> Post<ReturnObject>(string uri, object requestBody)
-		{
-			string serializedRequestBody = JsonSerializer.Serialize(requestBody);
-            StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), httpContent);
-
-            string responseBody = await responseMessage.Content.ReadAsStringAsync();
-            ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
-
-            responseMessage.Dispose();
-            return jsonResponseBody;
-        }
-
-		internal async Task<ReturnObject> Patch<ReturnObject>(string uri, object requestBody)
-		{
-            string serializedRequestBody = JsonSerializer.Serialize(requestBody);
-            StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), httpContent);
-
-            string responseBody = await responseMessage.Content.ReadAsStringAsync();
-            ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
-
-            responseMessage.Dispose();
-            return jsonResponseBody;
-        }
-
-		internal async Task Delete(string uri)
-		{
-            HttpResponseMessage responseMessage = await Request(HttpMethod.Delete, new Uri(uri));
-            responseMessage.Dispose();
-        }
-
-        // Multipart
-
-        internal async Task<ReturnObject> PostMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files)
-        {
-            string serializedRequestBody = JsonSerializer.Serialize(requestBody);
-
-            using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
-            using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
+			for (int i = 0; i < files.Count; i++)
 			{
-                formDataContent.Add(httpContent, "payload_json");
+				SharphookFile file = files[i];
+				StreamContent streamContent = new StreamContent(file.Stream);
 
-                for (int i = 0; i < files.Count; i++)
-				{
-					SharphookFile file= files[i];
-                    StreamContent streamContent = new StreamContent(file.Stream);
+				streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+				formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
+			}
 
-                    streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                    formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
-                }
+			HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), headers, formDataContent);
 
-                HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), formDataContent);
+			if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
 
-                if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
+			string responseBody = await responseMessage.Content.ReadAsStringAsync();
+			ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
-                string responseBody = await responseMessage.Content.ReadAsStringAsync();
-                ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+			return jsonResponseBody;
+		}
+	}
 
-                return jsonResponseBody;
-            }
-        }
+	internal async Task<ReturnObject> PatchMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
+	{
+		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
+        long totalFileUploadSize = 0;
 
-        internal async Task<ReturnObject> PatchMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files)
+        foreach (SharphookFile file in files)
         {
-            string serializedRequestBody = JsonSerializer.Serialize(requestBody);
-
-            using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
-			using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
-			{
-                formDataContent.Add(httpContent, "payload_json");
-
-				for (int i = 0; i < files.Count; i++) 
-				{
-                    SharphookFile file = files[i];
-                    StreamContent streamContent = new StreamContent(file.Stream);
-
-                    streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                    formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
-                }
-
-                HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), formDataContent);
-
-                if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
-
-                string responseBody = await responseMessage.Content.ReadAsStringAsync();
-                ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
-
-                return jsonResponseBody;
-            }
+            totalFileUploadSize += file.Stream.Length;
         }
 
-        public PartialWebhook GetPartialWebhook(ulong webhookId, string webhookToken)
+        if (totalFileUploadSize > 25_000_000) { throw new ArgumentException("Files too big to upload. Make sure the total size of the files you are uploading is under 25MB."); }
+
+        using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
+		using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
 		{
-			return new PartialWebhook(this, webhookId, webhookToken);
+			formDataContent.Add(httpContent, "payload_json");
+
+			for (int i = 0; i < files.Count; i++)
+			{
+				SharphookFile file = files[i];
+				StreamContent streamContent = new StreamContent(file.Stream);
+
+				streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+				formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
+			}
+
+			HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), headers, formDataContent);
+
+			if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
+
+			string responseBody = await responseMessage.Content.ReadAsStringAsync();
+			ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+
+			return jsonResponseBody;
+		}
+	}
+
+	public PartialWebhook GetPartialWebhook(string webhookUrl)
+	{
+		ulong webhookId;
+		string webhookToken;
+
+		Regex WebhookUrlRegex = new Regex(
+			@"^.*(discord|discordapp)\.com\/api\/webhooks\/([\d]+)\/([a-z0-9_-]+)$",
+			RegexOptions.Compiled |
+			RegexOptions.IgnoreCase |
+			RegexOptions.CultureInvariant
+		);
+
+		Match webhookUrlMatch = WebhookUrlRegex.Match(webhookUrl);
+
+		Group webhookIdMatch = webhookUrlMatch.Groups[2];
+		Group webhookTokenMatch = webhookUrlMatch.Groups[3];
+
+		if (webhookIdMatch.Success && webhookTokenMatch.Success)
+		{
+			webhookId = Convert.ToUInt64(webhookIdMatch.Value);
+			webhookToken = webhookTokenMatch.Value;
+		}
+		else
+		{
+			throw new ArgumentException(
+				$"webhook url provided ({webhookUrl}) could not be parsed. Please check the url for any mistakes and try again."
+			);
 		}
 
-		public async Task<Webhook> GetWebhook(string webhookUrl)
-		{
-			WebhookObject webhookObject = await Get<WebhookObject>(webhookUrl);
-			Webhook webhook = new Webhook(this, webhookObject);
+		return new PartialWebhook(this, webhookId, webhookToken);
+	}
 
-			return webhook;
-		}
+	public PartialWebhook GetPartialWebhook(ulong webhookId, string webhookToken)
+	{
+		return new PartialWebhook(this, webhookId, webhookToken);
+	}
 
-		public async Task<Webhook> GetWebhook(ulong webhookId, string webhookToken)
-		{
-			WebhookObject webhookObject = await Get<WebhookObject>($"https://discord.com/api/webhooks/{webhookId}/{webhookToken}");
-			Webhook webhook = new Webhook(this, webhookObject);
+	public async Task<Webhook> GetWebhook(string webhookUrl)
+	{
+		WebhookObject webhookObject = await Get<WebhookObject>(webhookUrl);
+		Webhook webhook = new Webhook(this, webhookObject);
 
-			return webhook;
-		}
+		return webhook;
+	}
+
+	public async Task<Webhook> GetWebhook(ulong webhookId, string webhookToken)
+	{
+		WebhookObject webhookObject = await Get<WebhookObject>($"https://discord.com/api/webhooks/{webhookId}/{webhookToken}");
+		Webhook webhook = new Webhook(this, webhookObject);
+
+		return webhook;
 	}
 }

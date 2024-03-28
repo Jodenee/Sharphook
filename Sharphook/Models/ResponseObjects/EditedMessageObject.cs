@@ -2,11 +2,10 @@
 
 using System.Text.Json.Serialization;
 
-namespace Sharphook.Models.ResponseObjects
+namespace Sharphook.Models.ResponseObjects;
+
+public class EditedMessageObject : MessageObject
 {
-    public class EditedMessageObject : MessageObject
-    {
-        [JsonPropertyName("edited_timestamp")]
-        public string EditedAt { get; set; }
-    }
+    [JsonPropertyName("edited_timestamp")]
+    public string EditedAt { get; set; }
 }

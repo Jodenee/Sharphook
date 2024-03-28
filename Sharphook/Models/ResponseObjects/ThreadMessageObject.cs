@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Sharphook.Models.ResponseObjects
+namespace Sharphook.Models.ResponseObjects;
+
+public class ThreadMessageObject : MessageObject
 {
-    public class ThreadMessageObject : MessageObject
-    {
-        [JsonPropertyName("position")]
-        public uint Position { get; set; }
-    }
+    [JsonPropertyName("position")]
+    public uint Position { get; set; }
 }

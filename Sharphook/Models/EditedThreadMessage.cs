@@ -1,15 +1,14 @@
 ﻿using Sharphook.Models.ResponseObjects;
 
-namespace Sharphook.Models
-{
-    public class EditedThreadMessage : ThreadMessage
-    {
-        public DateTime EditedAt { get; private set; }
+namespace Sharphook.Models;
 
-        public EditedThreadMessage(WebhookClient client, EditedThreadMessageObject editedThreadMessageObject) 
-            : base(client, editedThreadMessageObject)
-        {
-            EditedAt = DateTime.Parse(editedThreadMessageObject.EditedAt);
-        }
+public class EditedThreadMessage : ThreadMessage
+{
+    public DateTime EditedAt { get; private set; }
+
+    public EditedThreadMessage(WebhookClient client, EditedThreadMessageObject editedThreadMessageObject)
+        : base(client, editedThreadMessageObject)
+    {
+        EditedAt = DateTime.Parse(editedThreadMessageObject.EditedAt);
     }
 }
