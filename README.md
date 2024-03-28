@@ -70,10 +70,10 @@ WebhookClient webhookClient = new WebhookClient();
 PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 
 // Edit webhook name
-await webhook.EditWebhookNameAsync("New name");
+await webhook.EditNameAsync("New name");
 
 // Edit webhook avatar
-await webhook.EditWebhookAvatarAsync(@"newAvatar.png", FileContentType.PNG);
+await webhook.EditAvatarAsync(@"newAvatar.png", FileContentType.PNG);
 ```
 
 ### Error handling 
