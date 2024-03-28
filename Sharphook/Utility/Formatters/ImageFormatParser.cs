@@ -5,9 +5,9 @@ namespace Sharphook.Utility.Formatters;
 
 internal static class ImageFormatParser
 {
-    public static async Task<string> ToDataURIAsync(string avatarFilePath, ImageFormat imageFormat)
+    public static async Task<string> ToDataURIAsync(string filePath, ImageFormat imageFormat)
     {
-        byte[] imageByteArray = await File.ReadAllBytesAsync(avatarFilePath);
+        byte[] imageByteArray = await File.ReadAllBytesAsync(filePath);
         string base64ImageData = Convert.ToBase64String(imageByteArray);
         string contentType = "";
 
