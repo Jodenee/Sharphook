@@ -32,35 +32,40 @@ public class User
 
     public string? GetAvatarUrl()
     {
-        if (AvatarHash == null) { return null; }
+        if (AvatarHash == null) 
+            return null;
 
         return $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}.png";
     }
 
     public string? GetAvatarUrl(int size)
     {
-        if (AvatarHash == null) { return null; }
+        if (AvatarHash == null) 
+            return null;
 
         return $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}.png?size={size}";
     }
 
     public string? GetAvatarUrl(ImageFormat imageFormat = ImageFormat.Png)
     {
-        if (AvatarHash == null) { return null; }
+        if (AvatarHash == null) 
+            return null;
 
         return $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}{ImageFormatParser.ToExtension(imageFormat)}";
     }
 
     public string? GetAvatarUrl(int size, ImageFormat imageFormat = ImageFormat.Png)
     {
-        if (AvatarHash == null) { return null; }
+        if (AvatarHash == null) 
+            return null;
 
         return $"https://cdn.discordapp.com/avatars/{Id}/{AvatarHash}{ImageFormatParser.ToExtension(imageFormat)}?size={size}";
     }
 
     public bool HasAnimatedAvatar()
     {
-        if (AvatarHash == null) { return false; }
+        if (AvatarHash == null) 
+            return false;
 
         return AvatarHash.StartsWith("a_");
     }

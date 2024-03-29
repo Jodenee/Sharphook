@@ -25,15 +25,4 @@ public class OptionalSendMessageInfo
         ThreadName = threadName;
         Files = files;
     }
-
-    public async Task DisposeAsync()
-    {
-        if (Files != null)
-        {
-            foreach (SharphookFile file in Files)
-            {
-                await file.DisposeAsync();
-            }
-        }
-    }
 }

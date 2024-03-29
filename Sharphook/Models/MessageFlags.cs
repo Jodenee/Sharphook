@@ -5,9 +5,7 @@ namespace Sharphook.Models;
 
 public class MessageFlags : BaseFlags
 {
-    public MessageFlags(int value = 0)
-        : base(value)
-    { }
+    public MessageFlags(int value = 0) : base(value) { }
 
     public MessageFlags(List<MessageFlag> flags)
         : base()
@@ -23,7 +21,7 @@ public class MessageFlags : BaseFlags
     {
         foreach (MessageFlag flag in flags)
         {
-            SetFlag((int)flag, true);
+            SetFlag((int) flag, true);
         }
     }
 
@@ -31,7 +29,7 @@ public class MessageFlags : BaseFlags
     {
         foreach (MessageFlag flag in flags)
         {
-            if (!HasFlag((int)flag)) { return false; }
+            if (!HasFlag((int) flag)) { return false; }
         }
 
         return true;
@@ -40,7 +38,7 @@ public class MessageFlags : BaseFlags
     {
         foreach (MessageFlag flag in flags)
         {
-            if (!HasFlag((int)flag)) { return false; }
+            if (!HasFlag((int) flag)) { return false; }
         }
 
         return true;
@@ -52,7 +50,8 @@ public class MessageFlags : BaseFlags
 
         foreach (MessageFlag flag in Enum.GetValues(typeof(MessageFlag)))
         {
-            if (!HasFlag((int)flag)) { continue; }
+            if (!HasFlag((int) flag)) 
+                continue;
 
             flags.Add(flag);
         }

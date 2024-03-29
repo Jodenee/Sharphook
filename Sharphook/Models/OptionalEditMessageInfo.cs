@@ -10,15 +10,4 @@ public class OptionalEditMessageInfo
     {
         Files = files;
     }
-
-    public async Task DisposeAsync()
-    {
-        if (Files != null)
-        {
-            foreach (SharphookFile file in Files)
-            {
-                await file.DisposeAsync();
-            }
-        }
-    }
 }

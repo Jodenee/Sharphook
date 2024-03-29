@@ -2,9 +2,9 @@
 
 public class SharphookFile
 {
-    private string? _filename;
+    string _filename;
 
-    public FileStream Stream { get; private set; }
+    public string FilePath;
     public bool Spoiler { get; private set; }
     public string? Description { get; private set; }
     public string FileName
@@ -12,36 +12,36 @@ public class SharphookFile
         get
         {
             if (Spoiler)
-            {
-                return "SPOILER_" + (_filename ?? Path.GetFileName(Stream.Name));
-            }
+                return $"SPOILER_{_filename}";
             else
-            {
-                return _filename ?? Path.GetFileName(Stream.Name);
-            }
+                return _filename;
         }
     }
     public string AttachmentLink
     {
         get => $"attachment://{FileName}";
     }
+    public FileStream Stream
+    {
+        get => File.OpenRead(FilePath);
+    }
 
     public SharphookFile(string filepath, string? filename = null, bool spoiler = false, string? description = null)
     {
-        _filename = filename;
-
-        Stream = File.OpenRead(filepath);
+        FilePath = filepath;
         Spoiler = spoiler;
         Description = description;
+
+        _filename = filename ?? Path.GetFileName(FilePath);
     }
 
     public SharphookFile(FileStream fileStream, string? filename = null, bool spoiler = false, string? description = null)
     {
-        _filename = filename;
-
-        Stream = fileStream;
+        FilePath = fileStream.Name;
         Spoiler = spoiler;
         Description = description;
+
+        _filename = filename ?? Path.GetFileName(fileStream.Name);
     }
 
     internal object ToObject(int index)
@@ -52,10 +52,5 @@ public class SharphookFile
             filename = FileName,
             description = Description,
         };
-    }
-
-    public async Task DisposeAsync()
-    {
-        await Stream.DisposeAsync();
     }
 }

@@ -78,12 +78,12 @@ public class WebhookClient
 		if (headers is not null)
 		{
 			foreach (NameValueHeaderValue header in headers)
-			{
+            {
 				message.Headers.Add(header.Name, header.Value);
 			}
 		}
 
-        HttpResponseMessage responseMessage = await HttpClient.SendAsync(message);
+		HttpResponseMessage responseMessage = await HttpClient.SendAsync(message);
 
 		string remaining = responseMessage.Headers.GetValues("X-Ratelimit-Remaining").First() ?? "0";
 
@@ -95,6 +95,7 @@ public class WebhookClient
 
 			message.Dispose();
 			requestLock.Release();
+
 			return await Request(httpMethod, uri, headers, content, acceptContentType);
 		}
 		else if (responseMessage.StatusCode == HttpStatusCode.TooManyRequests)
@@ -106,10 +107,12 @@ public class WebhookClient
 
 			message.Dispose();
 			requestLock.Release();
+
 			return await Request(httpMethod, uri, headers, content, acceptContentType);
 		}
 
-		if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
+		if (!responseMessage.IsSuccessStatusCode) 
+			ThrowExceptionFromStatusCode(responseMessage);
 
 		message.Dispose();
 		requestLock.Release();
@@ -167,14 +170,19 @@ public class WebhookClient
 	internal async Task<ReturnObject> PostMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
 	{
 		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
+		List<FileStream> streams = new List<FileStream>();
 		long totalFileUploadSize = 0;
 
 		foreach (SharphookFile file in files)
 		{
-			totalFileUploadSize += file.Stream.Length;
+			FileStream stream = file.Stream;
+
+            streams.Add(stream);
+            totalFileUploadSize += stream.Length;
 		}
-		
-		if (totalFileUploadSize > 25_000_000) { throw new ArgumentException("Files too big to upload. Make sure the total size of the files you are uploading is under 25MB."); }
+
+		if (totalFileUploadSize > 25_000_000) 
+			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 25MB.");
 
 		using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
 		using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
@@ -184,7 +192,7 @@ public class WebhookClient
 			for (int i = 0; i < files.Count; i++)
 			{
 				SharphookFile file = files[i];
-				StreamContent streamContent = new StreamContent(file.Stream);
+				StreamContent streamContent = new StreamContent(streams[i]);
 
 				streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
 				formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
@@ -192,28 +200,37 @@ public class WebhookClient
 
 			HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), headers, formDataContent);
 
-			if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
+			foreach (FileStream stream in streams)
+			{
+				await stream.DisposeAsync();
+			}
 
 			string responseBody = await responseMessage.Content.ReadAsStringAsync();
 			ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
-			return jsonResponseBody;
+            responseMessage.Dispose();
+            return jsonResponseBody;
 		}
 	}
 
 	internal async Task<ReturnObject> PatchMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
 	{
 		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
+        List<FileStream> streams = new List<FileStream>();
         long totalFileUploadSize = 0;
 
         foreach (SharphookFile file in files)
         {
-            totalFileUploadSize += file.Stream.Length;
+            FileStream stream = file.Stream;
+
+            streams.Add(stream);
+            totalFileUploadSize += stream.Length;
         }
 
-        if (totalFileUploadSize > 25_000_000) { throw new ArgumentException("Files too big to upload. Make sure the total size of the files you are uploading is under 25MB."); }
+        if (totalFileUploadSize > 25_000_000) 
+			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 25MB.");
 
-        using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
+		using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
 		using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
 		{
 			formDataContent.Add(httpContent, "payload_json");
@@ -221,20 +238,24 @@ public class WebhookClient
 			for (int i = 0; i < files.Count; i++)
 			{
 				SharphookFile file = files[i];
-				StreamContent streamContent = new StreamContent(file.Stream);
+				StreamContent streamContent = new StreamContent(streams[i]);
 
 				streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
 				formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
-			}
+            }
 
 			HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), headers, formDataContent);
 
-			if (!responseMessage.IsSuccessStatusCode) { ThrowExceptionFromStatusCode(responseMessage); }
+            foreach (FileStream stream in streams)
+            {
+                await stream.DisposeAsync();
+            }
 
-			string responseBody = await responseMessage.Content.ReadAsStringAsync();
+            string responseBody = await responseMessage.Content.ReadAsStringAsync();
 			ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
-			return jsonResponseBody;
+            responseMessage.Dispose();
+            return jsonResponseBody;
 		}
 	}
 
@@ -261,11 +282,7 @@ public class WebhookClient
 			webhookToken = webhookTokenMatch.Value;
 		}
 		else
-		{
-			throw new ArgumentException(
-				$"webhook url provided ({webhookUrl}) could not be parsed. Please check the url for any mistakes and try again."
-			);
-		}
+			throw new ArgumentException($"webhook url provided ({webhookUrl}) could not be parsed. Please check the url for any mistakes and try again.");
 
 		return new PartialWebhook(this, webhookId, webhookToken);
 	}

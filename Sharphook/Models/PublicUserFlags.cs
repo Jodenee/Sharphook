@@ -5,35 +5,35 @@ namespace Sharphook.Models;
 
 public class PublicUserFlags : BaseFlags
 {
-    public PublicUserFlags(int value = 0) : base(value)
-    { }
+    public PublicUserFlags(int value = 0) : base(value) { }
 
-    public bool HasFlags(List<UserPublicFlag> flags)
+    public bool HasFlags(List<PublicUserFlag> flags)
     {
-        foreach (UserPublicFlag flag in flags)
+        foreach (PublicUserFlag flag in flags)
         {
-            if (!HasFlag((int)flag)) { return false; }
+            if (!HasFlag((int) flag)) { return false; }
         }
 
         return true;
     }
-    public bool HasFlags(UserPublicFlag[] flags)
+    public bool HasFlags(PublicUserFlag[] flags)
     {
-        foreach (UserPublicFlag flag in flags)
+        foreach (PublicUserFlag flag in flags)
         {
-            if (!HasFlag((int)flag)) { return false; }
+            if (!HasFlag((int) flag)) { return false; }
         }
 
         return true;
     }
 
-    public List<UserPublicFlag> GetFlags()
+    public List<PublicUserFlag> GetFlags()
     {
-        List<UserPublicFlag> flags = new List<UserPublicFlag>();
+        List<PublicUserFlag> flags = new List<PublicUserFlag>();
 
-        foreach (UserPublicFlag flag in Enum.GetValues(typeof(UserPublicFlag)))
+        foreach (PublicUserFlag flag in Enum.GetValues(typeof(PublicUserFlag)))
         {
-            if (!HasFlag((int)flag)) { continue; }
+            if (!HasFlag((int) flag)) 
+                continue;
 
             flags.Add(flag);
         }

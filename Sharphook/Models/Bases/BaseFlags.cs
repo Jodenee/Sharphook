@@ -13,15 +13,12 @@ public class BaseFlags
     {
         return (Value & flag) == flag;
     }
+
     protected void SetFlag(int flag, bool toggle)
     {
         if (toggle)
-        {
             Value |= flag;
-        }
         else
-        {
             Value &= ~flag;
-        }
     }
 }

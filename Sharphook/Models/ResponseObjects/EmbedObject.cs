@@ -42,34 +42,22 @@ public class EmbedObject
         Embed embed = new Embed(Title, Description, Url);
 
         if (Color != null)
-        {
             embed.Color = new SharphookColor((uint)Color);
-        }
 
         if (Timestamp != null)
-        {
             embed.Timestamp = DateTime.Parse(Timestamp);
-        }
 
         if (Footer != null)
-        {
             embed.Footer = new EmbedFooter(Footer.Text, Footer.IconUrl);
-        }
 
         if (Image != null)
-        {
             embed.Image = new EmbedImage(Image.Url);
-        }
 
         if (Thumbnail != null)
-        {
             embed.Thumbnail = new EmbedThumbnail(Thumbnail.Url);
-        }
 
         if (Author != null)
-        {
             embed.Author = new EmbedAuthor(Author.Name, Author.Url, Author.IconUrl);
-        }
 
         if (Fields != null)
         {

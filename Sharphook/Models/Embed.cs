@@ -1,14 +1,4 @@
-﻿
-/* Unmerged change from project 'Sharphook (net6.0)'
-Before:
-using Sharphook.Models.ResponseObjects;
-After:
-using Sharphook;
-using Sharphook;
-using Sharphook.Models;
-using Sharphook.Models.ResponseObjects;
-*/
-using Sharphook.Models.ResponseObjects;
+﻿using Sharphook.Models.ResponseObjects;
 
 namespace Sharphook.Models;
 
@@ -60,13 +50,15 @@ public class Embed
             Author = new EmbedAuthor(embedObject.Author.Name, embedObject.Author.Url, embedObject.Author.IconUrl);
 
         if (embedObject.Fields != null)
+        {
             foreach (EmbedObjectField fieldObject in embedObject.Fields)
             {
                 Fields.Add(new EmbedField(fieldObject.Name, fieldObject.Value, fieldObject.Inline));
             }
+        }
     }
 
-    public void SetTimestampFromDatetime(DateTime? customTimestamp)
+    public void SetTimestampFromDatetime(DateTime? customTimestamp = null)
     {
         Timestamp = customTimestamp ?? DateTime.Now;
     }
@@ -75,10 +67,14 @@ public class Embed
     {
         int totalCharacters = 0;
 
-        if (Title != null) { totalCharacters += Title.Length; }
-        if (Description != null) { totalCharacters += Description.Length; }
-        if (Footer != null) { totalCharacters += Footer.Text.Length; }
-        if (Author != null) { totalCharacters += Author.Name.Length; }
+        if (Title != null) 
+            totalCharacters += Title.Length;
+        if (Description != null) 
+            totalCharacters += Description.Length;
+        if (Footer != null) 
+            totalCharacters += Footer.Text.Length;
+        if (Author != null) 
+            totalCharacters += Author.Name.Length;
 
         foreach (EmbedField embedField in Fields)
         {
@@ -98,14 +94,10 @@ public class Embed
         embedObject.Fields = new List<EmbedObjectField>();
 
         if (Color != null)
-        {
             embedObject.Color = Color.Value;
-        }
 
         if (Timestamp != null)
-        {
             embedObject.Timestamp = Timestamp?.ToString("o");
-        }
 
         if (Footer != null)
         {

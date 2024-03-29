@@ -55,18 +55,13 @@ public class PartialWebhook
 
 
         if (optionalInfo.Files != null)
-        {
             messageObject = await Client.PostMultipart<MessageObject>(requestUrl, requestBody, optionalInfo.Files);
-        }
         else
-        {
             messageObject = await Client.Post<MessageObject>(requestUrl, requestBody);
-        }
+
 
         if (waitForMessage)
-        {
             return new Message(Client, messageObject);
-        }
 
         return null;
     }
@@ -100,18 +95,12 @@ public class PartialWebhook
         ThreadMessageObject threadMessageObject;
 
         if (optionalInfo.Files != null)
-        {
             threadMessageObject = await Client.PostMultipart<ThreadMessageObject>(requestUrl, requestBody, optionalInfo.Files);
-        }
         else
-        {
             threadMessageObject = await Client.Post<ThreadMessageObject>(requestUrl, requestBody);
-        }
 
         if (waitForMessage)
-        {
             return new ThreadMessage(Client, threadMessageObject);
-        }
 
         return null;
     }
@@ -133,8 +122,10 @@ public class PartialWebhook
             }
         }
 
-        if (content is not null) { requestBody.content = content; }
-        if (embeds is not null) { requestBody.embeds = embedObjects; }
+        if (content is not null) 
+            requestBody.content = content;
+        if (embeds is not null) 
+            requestBody.embeds = embedObjects;
 
         EditedMessageObject editedMessageObject;
 
@@ -150,9 +141,7 @@ public class PartialWebhook
             editedMessageObject = await Client.PatchMultipart<EditedMessageObject>(requestUrl, requestBody, optionalInfo.Files);
         }
         else
-        {
             editedMessageObject = await Client.Patch<EditedMessageObject>(requestUrl, requestBody);
-        }
 
         return new EditedMessage(Client, editedMessageObject);
     }
@@ -174,8 +163,10 @@ public class PartialWebhook
             }
         }
 
-        if (content is not null) { requestBody.content = content; }
-        if (embeds is not null) { requestBody.embeds = embedObjects; }
+        if (content is not null) 
+            requestBody.content = content;
+        if (embeds is not null) 
+            requestBody.embeds = embedObjects;
 
         EditedThreadMessageObject editedThreadMessageObject;
 
@@ -191,9 +182,7 @@ public class PartialWebhook
             editedThreadMessageObject = await Client.PatchMultipart<EditedThreadMessageObject>(requestUrl, requestBody, optionalInfo.Files);
         }
         else
-        {
             editedThreadMessageObject = await Client.Patch<EditedThreadMessageObject>(requestUrl, requestBody);
-        }
 
         return new EditedThreadMessage(Client, editedThreadMessageObject);
     }
