@@ -88,7 +88,7 @@ public class PartialWebhook
             username = optionalInfo.UsernameOverride,
             avatar_url = optionalInfo.AvatarUrlOverride,
             tts = optionalInfo.TTS,
-            flags = optionalInfo.MessageFlags,
+            flags = optionalInfo.MessageFlags?.Value,
             thread_name = optionalInfo.ThreadName
         };
 
