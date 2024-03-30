@@ -73,7 +73,7 @@ PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 await webhook.EditNameAsync("New name");
 
 // Edit webhook avatar
-await webhook.EditAvatarAsync(@"newAvatar.png", FileContentType.PNG);
+await webhook.EditAvatarAsync(@"newAvatar.png", ImageFormat.Png);
 ```
 
 ### Error handling 
@@ -81,15 +81,19 @@ await webhook.EditAvatarAsync(@"newAvatar.png", FileContentType.PNG);
 ```c#
 WebhookClient webhookClient = new WebhookClient();
 PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
+uint threadId = 123;
+uint messageId = 456;
 
 try
 {
-    // This will raise a 400 Bad Request
-    await webhook.SendMessage("");
+    await webhook.DeleteMessageInThreadAsync(
+        threadId,
+        456
+    );
 }
-catch (SharphookHttpException exception)
+catch (NotFound)
 {
-    Console.WriteLine($"{(int)exception.Response.StatusCode} {exception.Response.ReasonPhrase}"); // 400 Bad Request
+    Console.WriteLine("Thread or message wasn't found.");
 }
 ```
 
