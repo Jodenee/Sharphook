@@ -81,8 +81,8 @@ await webhook.EditAvatarAsync(@"newAvatar.png", ImageFormat.Png);
 ```c#
 WebhookClient webhookClient = new WebhookClient();
 PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
-uint threadId = 123;
-uint messageId = 456;
+ulong threadId = 123;
+ulong messageId = 456;
 
 try
 {
