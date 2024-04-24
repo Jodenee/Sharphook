@@ -2,5 +2,5 @@
 
 public class NotFound : SharphookHttpException
 {
-    public NotFound(HttpResponseMessage response) : base(response) { }
+	public NotFound(HttpResponseMessage response) : base(response) { }
 }

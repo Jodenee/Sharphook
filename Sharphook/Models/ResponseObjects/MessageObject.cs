@@ -6,48 +6,48 @@ namespace Sharphook.Models.ResponseObjects;
 
 public class MessageObject
 {
-    [JsonPropertyName("id")]
-    public string Id { get; set; }
+	[JsonPropertyName("id")]
+	public string Id { get; set; }
 
-    [JsonPropertyName("channel_id")]
-    public string ChannelId { get; set; }
+	[JsonPropertyName("channel_id")]
+	public string ChannelId { get; set; }
 
-    [JsonPropertyName("author")]
-    public UserObject Author { get; set; }
+	[JsonPropertyName("author")]
+	public UserObject Author { get; set; }
 
-    [JsonPropertyName("content")]
-    public string Content { get; set; }
+	[JsonPropertyName("content")]
+	public string Content { get; set; }
 
-    [JsonPropertyName("timestamp")]
-    public string CreatedAt { get; set; }
+	[JsonPropertyName("timestamp")]
+	public string CreatedAt { get; set; }
 
-    [JsonPropertyName("type")]
-    public byte Type { get; set; }
+	[JsonPropertyName("type")]
+	public byte Type { get; set; }
 
-    [JsonPropertyName("embeds")]
-    public List<EmbedObject> Embeds { get; set; }
+	[JsonPropertyName("embeds")]
+	public List<EmbedObject> Embeds { get; set; }
 
-    [JsonPropertyName("pinned")]
-    public bool Pinned { get; set; }
+	[JsonPropertyName("pinned")]
+	public bool Pinned { get; set; }
 
-    [JsonPropertyName("mention_everyone")]
-    public bool MentionsEveryone { get; set; }
+	[JsonPropertyName("mention_everyone")]
+	public bool MentionsEveryone { get; set; }
 
-    [JsonPropertyName("mentions")]
-    public List<UserObject> MentionedUsers { get; set; }
+	[JsonPropertyName("mentions")]
+	public List<UserObject> MentionedUsers { get; set; }
 
-    [JsonPropertyName("mention_roles")]
-    public List<string> MentionedRoles { get; set; }
+	[JsonPropertyName("mention_roles")]
+	public List<string> MentionedRoles { get; set; }
 
-    [JsonPropertyName("tts")]
-    public bool IsTTS { get; set; }
+	[JsonPropertyName("tts")]
+	public bool IsTTS { get; set; }
 
-    [JsonPropertyName("attachments")]
-    public List<AttachmentObject> Attachments { get; set; }
+	[JsonPropertyName("attachments")]
+	public List<AttachmentObject> Attachments { get; set; }
 
-    [JsonPropertyName("flags")]
-    public int Flags { get; set; }
+	[JsonPropertyName("flags")]
+	public int Flags { get; set; }
 
-    [JsonPropertyName("webhook_id")]
-    public string WebhookId { get; set; }
+	[JsonPropertyName("webhook_id")]
+	public string WebhookId { get; set; }
 }

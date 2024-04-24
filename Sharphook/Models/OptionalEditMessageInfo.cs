@@ -2,12 +2,12 @@
 
 public class OptionalEditMessageInfo
 {
-    public List<SharphookFile>? Files { get; set; }
+	public List<SharphookFile>? Files { get; set; }
 
-    public OptionalEditMessageInfo(
-        List<SharphookFile>? files = null
-    )
-    {
-        Files = files;
-    }
+	public OptionalEditMessageInfo(
+		List<SharphookFile>? files = null
+	)
+	{
+		Files = files;
+	}
 }

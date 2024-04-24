@@ -78,9 +78,7 @@ public class WebhookClient
 		if (headers is not null)
 		{
 			foreach (NameValueHeaderValue header in headers)
-            {
 				message.Headers.Add(header.Name, header.Value);
-			}
 		}
 
 		HttpResponseMessage responseMessage = await HttpClient.SendAsync(message);
@@ -120,9 +118,12 @@ public class WebhookClient
 		return responseMessage;
 	}
 
-	internal async Task<ReturnObject> Get<ReturnObject>(string uri, List<NameValueHeaderValue>? headers = null)
+	internal async Task<ReturnObject?> Get<ReturnObject>(string uri, List<NameValueHeaderValue>? headers = null)
 	{
 		HttpResponseMessage responseMessage = await Request(HttpMethod.Get, new Uri(uri), headers);
+
+		if (responseMessage.StatusCode == HttpStatusCode.NoContent)
+			return default;
 
 		string responseBody = await responseMessage.Content.ReadAsStringAsync();
 		ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
@@ -131,13 +132,16 @@ public class WebhookClient
 		return jsonResponseBody!;
 	}
 
-	internal async Task<ReturnObject> Post<ReturnObject>(string uri, object requestBody, List<NameValueHeaderValue>? headers = null)
+	internal async Task<ReturnObject?> Post<ReturnObject>(string uri, object requestBody, List<NameValueHeaderValue>? headers = null)
 	{
 		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
 		StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
 
 		HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), headers, httpContent);
 
+		if (responseMessage.StatusCode == HttpStatusCode.NoContent) 
+			return default;
+
 		string responseBody = await responseMessage.Content.ReadAsStringAsync();
 		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
@@ -145,13 +149,16 @@ public class WebhookClient
 		return jsonResponseBody;
 	}
 
-	internal async Task<ReturnObject> Patch<ReturnObject>(string uri, object requestBody, List<NameValueHeaderValue>? headers = null)
+	internal async Task<ReturnObject?> Patch<ReturnObject>(string uri, object requestBody, List<NameValueHeaderValue>? headers = null)
 	{
 		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
 		StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
 
 		HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), headers, httpContent);
 
+		if (responseMessage.StatusCode == HttpStatusCode.NoContent)
+			return default;
+
 		string responseBody = await responseMessage.Content.ReadAsStringAsync();
 		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
 
@@ -159,7 +166,7 @@ public class WebhookClient
 		return jsonResponseBody;
 	}
 
-	internal async Task Delete(string uri, List<NameValueHeaderValue> headers)
+	internal async Task Delete(string uri, List<NameValueHeaderValue>? headers = null)
 	{
 		HttpResponseMessage responseMessage = await Request(HttpMethod.Delete, new Uri(uri), headers);
 		responseMessage.Dispose();
@@ -167,7 +174,7 @@ public class WebhookClient
 
 	// Multipart
 
-	internal async Task<ReturnObject> PostMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
+	internal async Task<ReturnObject?> PostMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
 	{
 		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
 		List<FileStream> streams = new List<FileStream>();
@@ -177,86 +184,88 @@ public class WebhookClient
 		{
 			FileStream stream = file.Stream;
 
-            streams.Add(stream);
-            totalFileUploadSize += stream.Length;
+			streams.Add(stream);
+			totalFileUploadSize += stream.Length;
 		}
 
 		if (totalFileUploadSize > 25_000_000) 
 			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 25MB.");
 
-		using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
-		using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
+		using StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
+		using MultipartFormDataContent formDataContent = new MultipartFormDataContent
 		{
-			formDataContent.Add(httpContent, "payload_json");
+			{ httpContent, "payload_json" }
+		};
 
-			for (int i = 0; i < files.Count; i++)
-			{
-				SharphookFile file = files[i];
-				StreamContent streamContent = new StreamContent(streams[i]);
+		for (int i = 0; i < files.Count; i++)
+		{
+			SharphookFile file = files[i];
+			StreamContent streamContent = new StreamContent(streams[i]);
 
-				streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-				formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
-			}
-
-			HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), headers, formDataContent);
-
-			foreach (FileStream stream in streams)
-			{
-				await stream.DisposeAsync();
-			}
-
-			string responseBody = await responseMessage.Content.ReadAsStringAsync();
-			ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
-
-            responseMessage.Dispose();
-            return jsonResponseBody;
+			streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+			formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
 		}
+
+		HttpResponseMessage responseMessage = await Request(HttpMethod.Post, new Uri(uri), headers, formDataContent);
+
+		foreach (FileStream stream in streams)
+			await stream.DisposeAsync();
+
+		if (responseMessage.StatusCode == HttpStatusCode.NoContent)
+			return default;
+
+		string responseBody = await responseMessage.Content.ReadAsStringAsync();
+		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+
+		responseMessage.Dispose();
+		return jsonResponseBody;
 	}
 
-	internal async Task<ReturnObject> PatchMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
+	internal async Task<ReturnObject?> PatchMultipart<ReturnObject>(string uri, object requestBody, List<SharphookFile> files, List<NameValueHeaderValue>? headers = null)
 	{
 		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
-        List<FileStream> streams = new List<FileStream>();
-        long totalFileUploadSize = 0;
+		List<FileStream> streams = new List<FileStream>();
+		long totalFileUploadSize = 0;
 
-        foreach (SharphookFile file in files)
-        {
-            FileStream stream = file.Stream;
+		foreach (SharphookFile file in files)
+		{
+			FileStream stream = file.Stream;
 
-            streams.Add(stream);
-            totalFileUploadSize += stream.Length;
-        }
+			streams.Add(stream);
+			totalFileUploadSize += stream.Length;
+		}
 
-        if (totalFileUploadSize > 25_000_000) 
+		if (totalFileUploadSize > 25_000_000) 
 			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 25MB.");
 
-		using (StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json"))
-		using (MultipartFormDataContent formDataContent = new MultipartFormDataContent())
+		using StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
+		using MultipartFormDataContent formDataContent = new MultipartFormDataContent
 		{
-			formDataContent.Add(httpContent, "payload_json");
+			{ httpContent, "payload_json" }
+		};
 
-			for (int i = 0; i < files.Count; i++)
-			{
-				SharphookFile file = files[i];
-				StreamContent streamContent = new StreamContent(streams[i]);
+		for (int i = 0; i < files.Count; i++)
+		{
+			SharphookFile file = files[i];
+			StreamContent streamContent = new StreamContent(streams[i]);
 
-				streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-				formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
-            }
-
-			HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), headers, formDataContent);
-
-            foreach (FileStream stream in streams)
-            {
-                await stream.DisposeAsync();
-            }
-
-            string responseBody = await responseMessage.Content.ReadAsStringAsync();
-			ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
-
-            responseMessage.Dispose();
-            return jsonResponseBody;
+			streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+			formDataContent.Add(streamContent, $"files[{i}]", file.FileName);
 		}
+
+		HttpResponseMessage responseMessage = await Request(HttpMethod.Patch, new Uri(uri), headers, formDataContent);
+
+		foreach (FileStream stream in streams)
+			await stream.DisposeAsync();
+
+		if (responseMessage.StatusCode == HttpStatusCode.NoContent)
+			return default;
+
+		string responseBody = await responseMessage.Content.ReadAsStringAsync();
+		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+
+		responseMessage.Dispose();
+		return jsonResponseBody;
 	}
 
 	public PartialWebhook GetPartialWebhook(string webhookUrl)
@@ -294,17 +303,15 @@ public class WebhookClient
 
 	public async Task<Webhook> GetWebhook(string webhookUrl)
 	{
-		WebhookObject webhookObject = await Get<WebhookObject>(webhookUrl);
-		Webhook webhook = new Webhook(this, webhookObject);
+		WebhookObject? webhookObject = await Get<WebhookObject>(webhookUrl);
 
-		return webhook;
+		return new Webhook(this, webhookObject!);
 	}
 
 	public async Task<Webhook> GetWebhook(ulong webhookId, string webhookToken)
 	{
-		WebhookObject webhookObject = await Get<WebhookObject>($"https://discord.com/api/webhooks/{webhookId}/{webhookToken}");
-		Webhook webhook = new Webhook(this, webhookObject);
+		WebhookObject? webhookObject = await Get<WebhookObject>($"https://discord.com/api/webhooks/{webhookId}/{webhookToken}");
 
-		return webhook;
+		return new Webhook(this, webhookObject!);
 	}
 }

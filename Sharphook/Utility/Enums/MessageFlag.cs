@@ -2,6 +2,6 @@
 
 public enum MessageFlag : int
 {
-    SuppressEmbeds = 1 << 2,
-    SuppressNotifications = 1 << 12
+	SuppressEmbeds = 1 << 2,
+	SuppressNotifications = 1 << 12
 }

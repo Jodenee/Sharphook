@@ -6,30 +6,30 @@ namespace Sharphook.Models.ResponseObjects;
 
 public class AttachmentObject
 {
-    [JsonPropertyName("id")]
-    public string Id { get; set; }
+	[JsonPropertyName("id")]
+	public string Id { get; set; }
 
-    [JsonPropertyName("filename")]
-    public string Filename { get; set; }
+	[JsonPropertyName("filename")]
+	public string Filename { get; set; }
 
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+	[JsonPropertyName("description")]
+	public string? Description { get; set; }
 
-    [JsonPropertyName("content_type")]
-    public string? ContentType { get; set; }
+	[JsonPropertyName("content_type")]
+	public string? ContentType { get; set; }
 
-    [JsonPropertyName("size")]
-    public int Size { get; set; }
+	[JsonPropertyName("size")]
+	public int Size { get; set; }
 
-    [JsonPropertyName("url")]
-    public string Url { get; set; }
+	[JsonPropertyName("url")]
+	public string Url { get; set; }
 
-    [JsonPropertyName("proxy_url")]
-    public string ProxyUrl { get; set; }
+	[JsonPropertyName("proxy_url")]
+	public string ProxyUrl { get; set; }
 
-    [JsonPropertyName("height")]
-    public int? Height { get; set; }
+	[JsonPropertyName("height")]
+	public int? Height { get; set; }
 
-    [JsonPropertyName("width")]
-    public int? Width { get; set; }
+	[JsonPropertyName("width")]
+	public int? Width { get; set; }
 }

@@ -2,5 +2,5 @@
 
 public class BadRequest : SharphookHttpException
 {
-    public BadRequest(HttpResponseMessage response) : base(response) { }
+	public BadRequest(HttpResponseMessage response) : base(response) { }
 }

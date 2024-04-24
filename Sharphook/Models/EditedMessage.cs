@@ -4,11 +4,11 @@ namespace Sharphook.Models;
 
 public class EditedMessage : Message
 {
-    public DateTime EditedAt { get; private set; }
+	public DateTime EditedAt { get; private set; }
 
-    public EditedMessage(WebhookClient client, EditedMessageObject editedMessageObject)
-        : base(client, editedMessageObject)
-    {
-        EditedAt = DateTime.Parse(editedMessageObject.EditedAt);
-    }
+	public EditedMessage(WebhookClient client, EditedMessageObject editedMessageObject)
+		: base(client, editedMessageObject)
+	{
+		EditedAt = DateTime.Parse(editedMessageObject.EditedAt);
+	}
 }

@@ -4,6 +4,6 @@ namespace Sharphook.Models.ResponseObjects;
 
 public class ThreadMessageObject : MessageObject
 {
-    [JsonPropertyName("position")]
-    public uint Position { get; set; }
+	[JsonPropertyName("position")]
+	public uint Position { get; set; }
 }

@@ -2,5 +2,5 @@
 
 public class SharphookException : Exception
 {
-    public SharphookException() : base() { }
+	public SharphookException() : base() { }
 }
