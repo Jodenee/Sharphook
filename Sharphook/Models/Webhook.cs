@@ -14,18 +14,18 @@ public class Webhook : PartialWebhook
 	public string? Avatar { get; private set; }
 	public User? Creator { get; private set; }
 
-	public Webhook(WebhookClient client, WebhookObject webhookResponce)
-		: base(client, Convert.ToUInt64(webhookResponce.Id), webhookResponce.Token)
+	public Webhook(WebhookClient client, WebhookObject webhookObject)
+		: base(client, Convert.ToUInt64(webhookObject.Id), webhookObject.Token)
 	{
 		Client = client;
-		Type = webhookResponce.Type;
-		Name = webhookResponce.Name;
-		GuildId = webhookResponce.GuildId;
-		ChannelId = webhookResponce.ChannelId;
-		ApplicationId = webhookResponce.ApplicationId;
-		Avatar = webhookResponce.Avatar;
+		Type = webhookObject.Type;
+		Name = webhookObject.Name;
+		GuildId = webhookObject.GuildId;
+		ChannelId = webhookObject.ChannelId;
+		ApplicationId = webhookObject.ApplicationId;
+		Avatar = webhookObject.Avatar;
 
-		if (webhookResponce.Creator != null)
-			Creator = new User(client, webhookResponce.Creator);
+		if (webhookObject.Creator != null)
+			Creator = new User(client, webhookObject.Creator);
 	}
 }
