@@ -88,7 +88,7 @@ try
 {
     await webhook.DeleteMessageInThreadAsync(
         threadId,
-        456
+        messageId
     );
 }
 catch (NotFound)
