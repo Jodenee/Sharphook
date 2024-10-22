@@ -2,5 +2,5 @@
 
 public class BadGateway : SharphookHttpException
 {
-    public BadGateway(HttpResponseMessage response) : base(response) { }
+	public BadGateway(HttpResponseMessage response) : base(response) { }
 }

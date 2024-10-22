@@ -2,5 +2,5 @@
 
 public class Unauthorized : SharphookHttpException
 {
-    public Unauthorized(HttpResponseMessage response) : base(response) { }
+	public Unauthorized(HttpResponseMessage response) : base(response) { }
 }
