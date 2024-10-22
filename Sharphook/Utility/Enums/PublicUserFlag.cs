@@ -1,5 +1,6 @@
 ﻿namespace Sharphook.Utility.Enums;
 
+[Flags]
 public enum PublicUserFlag : int
 {
 	Staff = 1 << 0,
