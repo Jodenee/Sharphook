@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Sharphook.ResponseObjects;
 
-internal record UserObject
+internal sealed record UserObject
 {
 	[JsonPropertyName("id")]
 	public string Id { get; set; }

@@ -3,7 +3,7 @@ using Sharphook.Utility.Enums;
 
 namespace Sharphook;
 
-public class Message
+public sealed class Message
 {
 	private readonly WebhookClient _client;
 	public ulong Id { get; private set; }

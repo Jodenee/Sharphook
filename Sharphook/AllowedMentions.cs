@@ -3,7 +3,7 @@ using Sharphook.Utility.Enums;
 
 namespace Sharphook;
 
-public class AllowedMentions
+public sealed class AllowedMentions
 {
 	public AllowedMentionType? AllowedTypes;
 	public List<ulong> AllowedRoleMentions = new List<ulong>();

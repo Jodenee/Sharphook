@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Sharphook.ResponseObjects;
 
-internal record AllowedMentionsObject
+internal sealed record AllowedMentionsObject
 {
 	[JsonPropertyName("parse")]
 	public List<string> Parse { get; set; }

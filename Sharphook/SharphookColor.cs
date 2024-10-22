@@ -1,6 +1,6 @@
 ﻿namespace Sharphook;
 
-public class SharphookColor
+public sealed class SharphookColor
 {
 	private const uint _maxValue = 0xFFFFFF;
 	public uint Value { get; private set; }

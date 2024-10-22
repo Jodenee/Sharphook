@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Sharphook;
 
-public class WebhookClient
+public sealed class WebhookClient
 {
 	private readonly HttpClient _httpClient;
 

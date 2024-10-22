@@ -1,6 +1,6 @@
 ﻿namespace Sharphook;
 
-public class OptionalEditMessageInfo
+public sealed class OptionalEditMessageInfo
 {
 	public List<SharphookFile>? Files { get; set; }
 	public AllowedMentions? AllowedMentions { get; set; }

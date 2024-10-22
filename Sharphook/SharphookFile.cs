@@ -1,6 +1,6 @@
 ﻿namespace Sharphook;
 
-public class SharphookFile
+public sealed class SharphookFile
 {
 	private readonly string _filename;
 

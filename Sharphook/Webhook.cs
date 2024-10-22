@@ -3,7 +3,7 @@ using Sharphook.ResponseObjects;
 
 namespace Sharphook;
 
-public class Webhook : PartialWebhook
+public sealed class Webhook : PartialWebhook
 {
 	public short Type { get; private set; }
 	public string Name { get; private set; }

@@ -2,7 +2,7 @@
 
 namespace Sharphook;
 
-public class EmbedImage
+public sealed class EmbedImage
 {
 	public string Url { get; set; }
 	public string? ProxiedUrl { get; private set; }

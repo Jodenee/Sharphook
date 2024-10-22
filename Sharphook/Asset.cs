@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Sharphook;
 
-public class Asset
+public sealed class Asset
 {
 	private readonly WebhookClient _client;
 

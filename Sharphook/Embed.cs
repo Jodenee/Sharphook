@@ -2,7 +2,7 @@
 
 namespace Sharphook;
 
-public class Embed
+public sealed class Embed
 {
 	public string? Title { get; set; }
 	public string? Description { get; set; }

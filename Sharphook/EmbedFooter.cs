@@ -2,7 +2,7 @@
 
 namespace Sharphook;
 
-public class EmbedFooter
+public sealed class EmbedFooter
 {
 	public string Text { get; set; }
 	public string? IconUrl { get; set; }

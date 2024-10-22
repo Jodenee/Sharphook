@@ -4,7 +4,7 @@ using Sharphook.Utility.Formatters;
 
 namespace Sharphook;
 
-public class User
+public sealed class User
 {
 	private readonly WebhookClient _client;
 	public ulong Id { get; private set; }

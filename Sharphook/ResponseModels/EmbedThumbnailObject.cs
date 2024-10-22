@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Sharphook.ResponseObjects;
 
-internal record EmbedThumbnailObject
+internal sealed record EmbedThumbnailObject
 {
 	[JsonPropertyName("url")]
 	public string Url { get; set; }

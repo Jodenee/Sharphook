@@ -2,7 +2,7 @@
 
 namespace Sharphook;
 
-public class OptionalSendMessageInfo
+public sealed class OptionalSendMessageInfo
 {
 	public bool? TTS { get; set; }
 	public string? UsernameOverride { get; set; }

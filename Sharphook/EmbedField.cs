@@ -2,7 +2,7 @@
 
 namespace Sharphook;
 
-public class EmbedField
+public sealed class EmbedField
 {
 	public string Name { get; set; }
 	public string Value { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Sharphook;
 
-public class Attachment
+public sealed class Attachment
 {
 	public ulong Id { get; private set; }
 	public string FileName { get; private set; }

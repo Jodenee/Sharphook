@@ -3,7 +3,7 @@ using Sharphook.ResponseObjects;
 
 namespace Sharphook;
 
-public class EmbedThumbnail
+public sealed class EmbedThumbnail
 {
 	public string Url { get; set; }
 	public string? ProxiedUrl { get; private set; }

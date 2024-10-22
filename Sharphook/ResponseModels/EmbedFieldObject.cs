@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Sharphook.ResponseObjects;
 
-internal record EmbedFieldObject
+internal sealed record EmbedFieldObject
 {
 	[JsonPropertyName("name")]
 	public string Name { get; set; }
