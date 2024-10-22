@@ -1,5 +1,6 @@
 ﻿namespace Sharphook.Utility.Enums;
 
+[Flags]
 public enum MessageFlag : int
 {
 	SuppressEmbeds = 1 << 2,
