@@ -2,9 +2,15 @@
 
 public static class MentionFormatter
 {
-	public static string MentionUser(ulong userId) => $"<@{userId}>";
+	public static string Everyone = "@everyone";
+	public static string Here = "@here";
 
-	public static string MentionRole(ulong roleId) => $"<@&{roleId}>";
+	public static string User(ulong userId)
+		=> $"<@{userId}>";
 
-	public static string MentionChannel(ulong channelId) => $"<#{channelId}>";
+	public static string Role(ulong roleId)
+		=> $"<@&{roleId}>";
+
+	public static string Channel(ulong channelId)
+		=> $"<#{channelId}>";
 }
