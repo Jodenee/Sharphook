@@ -11,16 +11,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        dotnet: [ '9.x.x', '8.x.x', '7.x.x', '6.x.x' ]
         
     steps:
     - uses: actions/checkout@v4
-    - name: Setup .NET ${{ matrix.dotnet }}
+    - name: Setup .NET Versions
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
