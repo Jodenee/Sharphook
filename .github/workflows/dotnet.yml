@@ -16,12 +16,12 @@ jobs:
     
     strategy:
       matrix:
-        dotnet: [ '8.x.x', '7.x.x', '6.x.x' ]
+        dotnet: [ '9.x.x', '8.x.x', '7.x.x', '6.x.x' ]
         
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet }}
     - name: Restore dependencies
