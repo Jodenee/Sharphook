@@ -23,10 +23,14 @@ jobs:
     - name: Setup .NET ${{ matrix.dotnet }}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ matrix.dotnet }}
+        dotnet-version: |
+          9.x.x
+          8.x.x
+          7.x.x
+          6.x.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build -f ${{ matrix.dotnet }} Sharphook
+    - name: Build Sharphook
       run: dotnet build Sharphook --no-restore
     - name: Test Sharphook
       run: dotnet test Sharphook --no-build --verbosity normal
