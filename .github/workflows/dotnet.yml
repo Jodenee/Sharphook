@@ -26,7 +26,7 @@ jobs:
         dotnet-version: ${{ matrix.dotnet }}
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build Sharphook
+    - name: Build -f ${{ matrix.dotnet }} Sharphook
       run: dotnet build Sharphook --no-restore
     - name: Test Sharphook
       run: dotnet test Sharphook --no-build --verbosity normal
