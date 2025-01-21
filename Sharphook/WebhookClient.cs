@@ -199,8 +199,8 @@ public sealed class WebhookClient
 			totalFileUploadSize += stream.Length;
 		}
 
-		if (totalFileUploadSize > 25_000_000)
-			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 25MB.");
+		if (totalFileUploadSize > 10_485_760)
+			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 10MiB.");
 
 		using StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
 		using MultipartFormDataContent formDataContent = new MultipartFormDataContent
@@ -256,8 +256,8 @@ public sealed class WebhookClient
 			totalFileUploadSize += stream.Length;
 		}
 
-		if (totalFileUploadSize > 25_000_000)
-			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 25MB.");
+		if (totalFileUploadSize > 10_485_760)
+			throw new ArgumentException("Payload too large to upload. Make sure the total size of the files you are uploading is under 10MiB.");
 
 		using StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
 		using MultipartFormDataContent formDataContent = new MultipartFormDataContent
