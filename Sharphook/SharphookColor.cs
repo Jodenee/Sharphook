@@ -22,7 +22,8 @@ public sealed class SharphookColor
 
 	public SharphookColor(uint value)
 	{
-		if (value > _maxValue) throw new ArgumentOutOfRangeException($"value needs to be less than or equal to {_maxValue}!");
+		if (value > _maxValue) 
+			throw new ArgumentOutOfRangeException($"value needs to be less than or equal to {_maxValue}!");
 
 		Value = value;
 	}
