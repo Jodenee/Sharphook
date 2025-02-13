@@ -1,4 +1,7 @@
-﻿using Sharphook.ResponseObjects;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+using Sharphook.ResponseModels;
+using Sharphook.ResponseObjects;
 using System.Text.Json.Serialization;
 
 namespace Sharphook.RequestModels;
@@ -31,4 +34,7 @@ internal sealed record SendMessageRequestBody
 
 	[JsonPropertyName("applied_tags")]
 	public List<ulong>? AppliedTags { get; set; }
+
+	[JsonPropertyName("poll")]
+	public PollObject Poll { get; set; }
 }
