@@ -7,8 +7,8 @@ namespace Sharphook.ResponseModels;
 internal sealed record PollMediaObject
 {
     [JsonPropertyName("text")]
-    public string? Text { get; set; }
+    public string Text { get; set; }
 
     [JsonPropertyName("emoji")]
-    public PollPartialEmojiObject? Emoji { get; set; }
+    public PollEmojiObject? Emoji { get; set; }
 }

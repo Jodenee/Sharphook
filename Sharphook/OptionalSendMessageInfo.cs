@@ -1,4 +1,5 @@
-﻿using Sharphook.Utility.Enums;
+﻿using Sharphook.ResponseModels;
+using Sharphook.Utility.Enums;
 
 namespace Sharphook;
 
@@ -12,6 +13,7 @@ public sealed class OptionalSendMessageInfo
 	public List<SharphookFile>? Files { get; set; }
 	public AllowedMentions? AllowedMentions { get; set; }
 	public List<ulong>? ApplyTags { get; set; }
+	public Poll? Poll { get; set; }
 
 	public OptionalSendMessageInfo(
 		bool? tts = null,
@@ -21,7 +23,8 @@ public sealed class OptionalSendMessageInfo
 		string? threadName = null,
 		List<SharphookFile>? files = null,
 		AllowedMentions? allowedMentions = null,
-		List<ulong>? applyTags = null)
+		List<ulong>? applyTags = null,
+		Poll? poll = null)
 	{
 		TTS = tts;
 		UsernameOverride = usernameOverride;
@@ -31,5 +34,6 @@ public sealed class OptionalSendMessageInfo
 		Files = files;
 		AllowedMentions = allowedMentions;
 		ApplyTags = applyTags;
+		Poll = poll;
 	}
 }

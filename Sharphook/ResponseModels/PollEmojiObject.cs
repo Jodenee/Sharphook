@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Sharphook.ResponseModels;
 
-internal sealed record PollPartialEmojiObject
+internal sealed record PollEmojiObject
 {
     [JsonPropertyName("id")]
     public ulong? Id { get; set; }
