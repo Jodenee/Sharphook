@@ -7,8 +7,16 @@ namespace Sharphook.ResponseModels;
 internal sealed record PollAnswerObject
 {
     [JsonPropertyName("answer_id")]
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     [JsonPropertyName("poll_media")]
     public PollMediaObject Media { get; set; }
+
+    [JsonConstructor]
+    public PollAnswerObject() { }
+
+    internal PollAnswerObject(PollAnswer pollAnswer)
+    {
+        Media = new PollMediaObject(pollAnswer.Content);
+    }
 }
