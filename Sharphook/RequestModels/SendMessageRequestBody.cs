@@ -36,5 +36,5 @@ internal sealed record SendMessageRequestBody
 	public List<ulong>? AppliedTags { get; set; }
 
 	[JsonPropertyName("poll")]
-	public PollObject Poll { get; set; }
+	public CreatePollObject? Poll { get; set; }
 }
