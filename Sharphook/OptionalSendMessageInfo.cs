@@ -13,7 +13,7 @@ public sealed class OptionalSendMessageInfo
 	public List<SharphookFile>? Files { get; set; }
 	public AllowedMentions? AllowedMentions { get; set; }
 	public List<ulong>? ApplyTags { get; set; }
-	public Poll? Poll { get; set; }
+	public CreatePoll? Poll { get; set; }
 
 	public OptionalSendMessageInfo(
 		bool? tts = null,
@@ -24,7 +24,7 @@ public sealed class OptionalSendMessageInfo
 		List<SharphookFile>? files = null,
 		AllowedMentions? allowedMentions = null,
 		List<ulong>? applyTags = null,
-		Poll? poll = null)
+		CreatePoll? poll = null)
 	{
 		TTS = tts;
 		UsernameOverride = usernameOverride;
