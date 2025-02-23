@@ -1,11 +1,5 @@
 ﻿using Sharphook.ResponseModels;
 using Sharphook.Utility.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Sharphook;
 
@@ -16,18 +10,19 @@ public class Poll
     public DateTime ExpiresAt { get; set; }
     public bool AllowMultipleChoice { get; set; }
     public PollLayoutType LayoutType { get; set; }
-    public object? Results { get; set; }
+    public PollResults? Results { get; set; }
 
     public Poll(PollMedia question, 
         List<PollAnswer> answers, 
         TimeSpan expiresIn, 
         bool allowMultipleChoice, 
-        PollLayoutType layoutType)
+        PollLayoutType? layoutType = null)
     {
         Question = question;
         Answers = answers;
         ExpiresAt = DateTime.Now + expiresIn;
         AllowMultipleChoice = allowMultipleChoice;
+        LayoutType = layoutType ?? PollLayoutType.DEFAULT;
     }
 
     internal Poll(PollObject pollObject)
@@ -35,8 +30,8 @@ public class Poll
         Question = new PollMedia(pollObject.Question);
         ExpiresAt = DateTime.Parse(pollObject.Expiry);
         AllowMultipleChoice = pollObject.AllowMultiselect;
-        LayoutType = Enum.Parse<PollLayoutType>(pollObject.LayoutType);
-        Results = pollObject.Results;
+        LayoutType = (PollLayoutType) pollObject.LayoutType;
+        Results = pollObject.Results != null ? new PollResults(pollObject.Results) : null;
 
         foreach (PollAnswerObject answerObject in pollObject.Answers)
             Answers.Add(new PollAnswer(answerObject));
