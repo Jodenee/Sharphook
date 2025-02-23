@@ -30,5 +30,5 @@ internal sealed record SendMessageInThreadRequestBody
 	public int? Flags { get; set; }
 
 	[JsonPropertyName("poll")]
-	public PollObject Poll { get; set; }
+	public CreatePollObject Poll { get; set; }
 }
