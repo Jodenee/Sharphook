@@ -1,4 +1,5 @@
 using Sharphook.RequestModels;
+using Sharphook.ResponseModels;
 using Sharphook.ResponseObjects;
 using Sharphook.Utility.Helpers;
 using System.Dynamic;
@@ -49,9 +50,10 @@ public class PartialWebhook
 			Embeds = embedObjects,
 			AllowedMentions = (optionalSendInfo.AllowedMentions ?? _client.AllowedMentions)
 				.ToAllowedMentionsObject(),
-			Flags = (int?)optionalSendInfo.MessageFlags,
+			Flags = (int?) optionalSendInfo.MessageFlags,
 			ThreadName = optionalSendInfo.ThreadName,
-			AppliedTags = optionalSendInfo.ApplyTags
+			AppliedTags = optionalSendInfo.ApplyTags,
+			Poll = optionalSendInfo.Poll != null ? new CreatePollObject(optionalSendInfo.Poll) : null
 		};
 
 		MessageObject? messageObject;
@@ -63,7 +65,10 @@ public class PartialWebhook
 				optionalSendInfo.Files,
 				requestLock: _requestLock);
 		else
-			messageObject = await _client.Post<MessageObject>(requestUri, requestBody, requestLock: _requestLock);
+			messageObject = await _client.Post<MessageObject>(
+				requestUri, 
+				requestBody, 
+				requestLock: _requestLock);
 
 
 		if (messageObject != null)
