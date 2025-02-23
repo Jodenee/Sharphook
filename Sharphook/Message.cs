@@ -23,6 +23,7 @@ public sealed class Message
 	public MessageFlag Flags { get; private set; }
 	public DateTime? EditedAt { get; private set; }
 	public int? Position { get; private set; }
+	public Poll? Poll { get; private set; }
 
 	public string JumpUrl
 	{
