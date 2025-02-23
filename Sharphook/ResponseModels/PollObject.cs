@@ -19,7 +19,7 @@ internal sealed record PollObject
     public bool AllowMultiselect { get; set; }
 
     [JsonPropertyName("layout_type")]
-    public string LayoutType { get; set; }
+    public int LayoutType { get; set; }
 
     [JsonPropertyName("results")]
     public PollResultsObject? Results { get; set; }
