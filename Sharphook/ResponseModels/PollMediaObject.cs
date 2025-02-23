@@ -11,4 +11,13 @@ internal sealed record PollMediaObject
 
     [JsonPropertyName("emoji")]
     public PollEmojiObject? Emoji { get; set; }
+
+    [JsonConstructor]
+    public PollMediaObject() { }
+
+    internal PollMediaObject(PollMedia pollMedia)
+    {
+        Text = pollMedia.Text;
+        Emoji = pollMedia.Emoji != null ? new PollEmojiObject(pollMedia.Emoji) : null;
+    }
 }
