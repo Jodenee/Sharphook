@@ -10,6 +10,7 @@ internal sealed record PollMediaObject
     public string Text { get; set; }
 
     [JsonPropertyName("emoji")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public PollEmojiObject? Emoji { get; set; }
 
     [JsonConstructor]
