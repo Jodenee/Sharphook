@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+using Sharphook.ResponseModels;
 using Sharphook.Utility.Enums;
 using System.Text.Json.Serialization;
 
@@ -57,4 +58,7 @@ internal sealed record MessageObject
 
 	[JsonPropertyName("position")]
 	public int? Position { get; set; }
+
+	[JsonPropertyName("poll")]
+	public PollObject Poll { get; set; }
 }
