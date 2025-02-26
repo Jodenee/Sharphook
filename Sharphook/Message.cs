@@ -50,6 +50,7 @@ public sealed class Message
 		WebhookId = Convert.ToUInt64(messageObject.WebhookId);
 		EditedAt = messageObject.EditedAt;
 		Position = messageObject.Position;
+		Poll = new Poll(messageObject.Poll);
 
 		foreach (EmbedObject embedObject in messageObject.Embeds)
 			Embeds.Add(new Embed(embedObject));
