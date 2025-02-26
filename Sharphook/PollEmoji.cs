@@ -1,6 +1,4 @@
 ﻿using Sharphook.ResponseModels;
-using Sharphook.ResponseObjects;
-using System.Text.Json.Serialization;
 
 namespace Sharphook;
 
