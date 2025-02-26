@@ -1,4 +1,5 @@
 ﻿using Sharphook.ResponseModels;
+using Sharphook.ResponseObjects;
 using System.Text.Json.Serialization;
 
 namespace Sharphook;
@@ -20,9 +21,7 @@ public class PollEmoji
 
     internal PollEmoji(PollEmojiObject pollEmojiObject)
     {
-        if (pollEmojiObject.Id != null)
-            Id = pollEmojiObject.Id;
-        else 
-            Name = pollEmojiObject.Name;
+        Id = pollEmojiObject.Id;
+        Name = pollEmojiObject.Name;
     }
 }
