@@ -54,7 +54,7 @@ public sealed class WebhookClient
 			Content = content,
 		};
 
-		if (headers is not null)
+        if (headers is not null)
 			foreach (NameValueHeaderValue header in headers)
 				request.Headers.Add(header.Name, header.Value);
 
@@ -121,7 +121,7 @@ public sealed class WebhookClient
 		SemaphoreSlim? requestLock = null)
 	{
 		string serializedRequestBody = JsonSerializer.Serialize(requestBody);
-		StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
+        StringContent httpContent = new StringContent(serializedRequestBody, Encoding.UTF8, "application/json");
 		HttpResponseMessage response = await Request(HttpMethod.Post, uri, headers, httpContent, requestLock: requestLock);
 
 		if (response.StatusCode == HttpStatusCode.NoContent)
