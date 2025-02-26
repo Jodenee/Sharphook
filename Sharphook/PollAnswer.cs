@@ -14,7 +14,7 @@ public class PollAnswer
 		Content = new PollMedia(pollAnswerObject.Media);
 	}
 
-	public PollAnswer(string text, PollEmoji pollEmoji)
+	public PollAnswer(string text, PollEmoji? pollEmoji = null)
 	{
 		Content = new PollMedia(text, pollEmoji);
 	}
