@@ -7,9 +7,11 @@ namespace Sharphook.ResponseModels;
 internal sealed record PollEmojiObject
 {
     [JsonPropertyName("id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ulong? Id { get; set; }
 
     [JsonPropertyName("name")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Name { get; set; }
 
     [JsonConstructor]
