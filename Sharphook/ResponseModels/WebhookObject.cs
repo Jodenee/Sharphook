@@ -7,7 +7,7 @@ namespace Sharphook.ResponseObjects;
 internal sealed record WebhookObject
 {
 	[JsonPropertyName("type")]
-	public short Type { get; set; }
+	public int Type { get; set; }
 
 	[JsonPropertyName("id")]
 	public string Id { get; set; }
