@@ -24,10 +24,10 @@ public sealed class Webhook : PartialWebhook
 			? Convert.ToUInt64(webhookObject.ApplicationId) 
 			: null;
 		Avatar = webhookObject.AvatarHash != null
-			? Asset.FromAvatar(this, Id, webhookObject.AvatarHash)
+			? Asset.FromAvatar(client, Id, webhookObject.AvatarHash)
 			: null;
 
 		if (webhookObject.Creator != null)
-			Creator = new User(this, webhookObject.Creator);
+			Creator = new User(client, webhookObject.Creator);
 	}
 }
