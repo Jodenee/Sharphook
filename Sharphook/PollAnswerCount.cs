@@ -2,15 +2,15 @@
 
 namespace Sharphook;
 
-public class PollResult
+public class PollAnswerCount
 {
-	public int Id { get; }
+	public int AnswerId { get; }
 	public int Votes { get; }
 	public bool IVoted { get; }
 
-	internal PollResult(PollResultObject pollResultObject)
+	internal PollAnswerCount(PollAnswerCountObject pollResultObject)
 	{
-		Id = pollResultObject.Id;
+		AnswerId = pollResultObject.AnswerId;
 		Votes = pollResultObject.Votes;
 		IVoted = pollResultObject.IVoted;
 	}
