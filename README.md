@@ -74,7 +74,7 @@ PartialWebhook webhook = webhookClient.GetPartialWebhook(123, "Token");
 await webhook.EditNameAsync("New name");
 
 // Edit webhook avatar
-await webhook.EditAvatarAsync(@"newAvatar.png", ImageFormat.Png);
+await webhook.EditAvatarAsync(@"newAvatar.png");
 ```
 
 ### Error handling 
