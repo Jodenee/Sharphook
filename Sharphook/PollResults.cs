@@ -5,13 +5,13 @@ namespace Sharphook;
 public class PollResults
 {
 	public bool IsFinalized { get; }
-	public List<PollResult> Results { get; } = new List<PollResult>();
+	public List<PollAnswerCount> AnswerCounts { get; } = new List<PollAnswerCount>();
 
 	internal PollResults(PollResultsObject pollResultsObject)
 	{
 		IsFinalized = pollResultsObject.IsFinalized;
 
-		foreach (PollResultObject result in pollResultsObject.Results)
-			Results.Add(new PollResult(result));
+		foreach (PollAnswerCountObject result in pollResultsObject.Results)
+			AnswerCounts.Add(new PollAnswerCount(result));
 	}
 }
