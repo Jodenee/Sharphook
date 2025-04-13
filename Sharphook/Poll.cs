@@ -5,6 +5,8 @@ namespace Sharphook;
 
 public class Poll
 {
+    private readonly WebhookClient _client;
+
     public PollMedia Question { get; set; }
     public List<PollAnswer> Answers { get; set; } = new List<PollAnswer>();
     public DateTime ExpiresAt { get; set; }
@@ -12,22 +14,10 @@ public class Poll
     public PollLayoutType LayoutType { get; set; }
     public PollResults? Results { get; set; }
 
-    public Poll(PollMedia question, 
-        List<PollAnswer> answers, 
-        TimeSpan expiresIn, 
-        bool allowMultipleChoice, 
-        PollLayoutType? layoutType = null)
+    internal Poll(WebhookClient client, PollObject pollObject)
     {
-        Question = question;
-        Answers = answers;
-        ExpiresAt = DateTime.Now + expiresIn;
-        AllowMultipleChoice = allowMultipleChoice;
-        LayoutType = layoutType ?? PollLayoutType.DEFAULT;
-    }
-
-    internal Poll(PollObject pollObject)
-    {
-        Question = new PollMedia(pollObject.Question);
+		_client = client;
+		Question = new PollMedia(pollObject.Question);
         ExpiresAt = DateTime.Parse(pollObject.Expiry);
         AllowMultipleChoice = pollObject.AllowMultiselect;
         LayoutType = (PollLayoutType) pollObject.LayoutType;
