@@ -10,5 +10,5 @@ internal sealed record PollResultsObject
     public bool IsFinalized { get; set; }
 
     [JsonPropertyName("answer_counts")]
-    public List<PollResultObject> Results { get; set; }
+    public List<PollAnswerCountObject> Results { get; set; }
 }
