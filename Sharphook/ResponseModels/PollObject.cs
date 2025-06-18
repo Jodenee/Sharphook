@@ -10,7 +10,7 @@ internal sealed record PollObject
     public PollMediaObject Question { get; set; }
 
     [JsonPropertyName("answers")]
-    public List<PollAnswerObject> Answers { get; set; }
+    public PollAnswerObject[] Answers { get; set; }
 
     [JsonPropertyName("expiry")]
     public string Expiry { get; set; }
