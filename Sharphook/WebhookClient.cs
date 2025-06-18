@@ -9,9 +9,9 @@ using System.Text.RegularExpressions;
 
 namespace Sharphook;
 
-public sealed class WebhookClient
+public sealed class WebhookClient : IDisposable
 {
-	private readonly HttpClient _httpClient;
+	internal readonly HttpClient _httpClient;
 
 	public byte ApiVersion { get; private set; }
 	public string BaseUrl { get; private set; }
@@ -108,10 +108,10 @@ public sealed class WebhookClient
 			return default;
 
 		string responseBody = await response.Content.ReadAsStringAsync();
-		ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+		ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody);
 
 		response.Dispose();
-		return jsonResponseBody!;
+		return jsonResponseBody;
 	}
 
 	internal async Task<ReturnObject?> Post<ReturnObject>(
@@ -128,7 +128,7 @@ public sealed class WebhookClient
 			return default;
 
 		string responseBody = await response.Content.ReadAsStringAsync();
-		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+		ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody);
 
 		response.Dispose();
 		return jsonResponseBody;
@@ -148,7 +148,7 @@ public sealed class WebhookClient
 			return default;
 
 		string responseBody = await response.Content.ReadAsStringAsync();
-		ReturnObject jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody)!;
+		ReturnObject? jsonResponseBody = JsonSerializer.Deserialize<ReturnObject>(responseBody);
 
 		response.Dispose();
 		return jsonResponseBody;

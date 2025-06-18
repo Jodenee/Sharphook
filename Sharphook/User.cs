@@ -7,6 +7,7 @@ namespace Sharphook;
 public sealed class User
 {
 	private readonly WebhookClient _client;
+
 	public ulong Id { get; private set; }
 	public string Username { get; private set; }
 	public string? GlobalName { get; private set; }

@@ -6,6 +6,7 @@ namespace Sharphook;
 public sealed class Message
 {
 	private readonly WebhookClient _client;
+
 	public ulong Id { get; private set; }
 	public ulong ChannelId { get; private set; }
 	public User Author { get; private set; }
@@ -35,7 +36,7 @@ public sealed class Message
 		_client = client;
 		Id = Convert.ToUInt64(messageObject.Id);
 		ChannelId = Convert.ToUInt64(messageObject.ChannelId);
-		Author = new User(client, messageObject.Author);
+		Author = new User(_client, messageObject.Author);
 		Content = messageObject.Content;
 		CreatedAt = DateTime.Parse(messageObject.CreatedAt);
 		Type = messageObject.Type;
@@ -50,7 +51,7 @@ public sealed class Message
 		WebhookId = Convert.ToUInt64(messageObject.WebhookId);
 		EditedAt = messageObject.EditedAt;
 		Position = messageObject.Position;
-		Poll = new Poll(messageObject.Poll);
+		Poll = new Poll(_client, messageObject.Poll);
 
 		foreach (EmbedObject embedObject in messageObject.Embeds)
 			Embeds.Add(new Embed(embedObject));

@@ -4,10 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace Sharphook.ResponseModels;
 
-internal class PollResultObject
+internal class PollAnswerCountObject
 {
     [JsonPropertyName("id")]
-    public int Id { get; set; }
+    public int AnswerId { get; set; }
 
     [JsonPropertyName("count")]
     public int Votes { get; set; }
