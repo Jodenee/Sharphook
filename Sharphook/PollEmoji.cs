@@ -19,7 +19,7 @@ public class PollEmoji
 
     internal PollEmoji(PollEmojiObject pollEmojiObject)
     {
-        Id = pollEmojiObject.Id;
+        Id = pollEmojiObject.Id != null ? Convert.ToUInt64(pollEmojiObject.Id) : null;
         Name = pollEmojiObject.Name;
     }
 }
