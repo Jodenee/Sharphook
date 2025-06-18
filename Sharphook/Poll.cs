@@ -13,10 +13,12 @@ public class Poll
     public bool AllowMultipleChoice { get; set; }
     public PollLayoutType LayoutType { get; set; }
     public PollResults? Results { get; set; }
+
     internal Poll(WebhookClient client, PollObject pollObject)
     {
 		_client = client;
 		Question = new PollMedia(pollObject.Question);
+        Answers = new PollAnswer[pollObject.Answers.Length];
         ExpiresAt = DateTime.Parse(pollObject.Expiry);
         AllowMultipleChoice = pollObject.AllowMultiselect;
         LayoutType = (PollLayoutType) pollObject.LayoutType;
