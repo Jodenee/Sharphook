@@ -28,7 +28,7 @@ public sealed class WebhookClient
 		{
 			Timeout = timeout ?? TimeSpan.FromSeconds(10)
 		};
-		AllowedMentions ??= AllowedMentions.All;
+		AllowedMentions = allowedMentions ?? AllowedMentions.All;
 	}
 
 	public void Dispose()
