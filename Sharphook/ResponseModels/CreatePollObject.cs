@@ -24,7 +24,7 @@ internal sealed record CreatePollObject
 	internal CreatePollObject(CreatePoll createPoll)
 	{
 		Question = new PollMediaObject(createPoll.Question);
-		Duration = (int) createPoll.Duration.TotalHours;
+		Duration = createPoll.Duration;
 		AllowMultiselect = createPoll.AllowMultipleChoice;
 		LayoutType = (int) createPoll.LayoutType;
 
