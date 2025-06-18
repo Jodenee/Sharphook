@@ -8,7 +8,7 @@ internal sealed record PollEmojiObject
 {
     [JsonPropertyName("id")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public ulong? Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("name")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -19,7 +19,7 @@ internal sealed record PollEmojiObject
 
     internal PollEmojiObject(PollEmoji pollEmoji)
     {
-        Id = pollEmoji.Id;
+        Id = pollEmoji.Id != null ? pollEmoji.Id.ToString() : null;
         Name = pollEmoji.Name;
     }
 }
